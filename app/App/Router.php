@@ -58,7 +58,7 @@
                 ini_set('display_errors', '1');
             }
     
-            $path = $_SERVER['PATH_INFO'] ?? '/';
+            $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     
             try {
