@@ -45,7 +45,6 @@
 - MySQL (atau kompatibel)
 
 ## 📂 Struktur Direktori
-
 ```
 THE-FRAMEWORK/
 ├── app/
@@ -81,18 +80,14 @@ THE-FRAMEWORK/
 │   │   │   └── UserSeeder.php
 │   │   └── HomeModel.php
 │   ├── Storage/
-│   │   ├── cache/
-│   │   └── logs/
+│   │   ├── cache/                 
+│   │   └── logs/                  
 │   └── BladeInit.php
 ├── database/
 │   ├── migrations/
 │   │   └── UsersTable.php
 │   └── seeders/
 │       └── UserSeeder.php
-├── htdocs/
-│   ├── .htaccess
-│   ├── file.php
-│   └── index.php
 ├── private-uploads/
 │   ├── dummy/
 │   └── user-pictures/
@@ -100,7 +95,7 @@ THE-FRAMEWORK/
 │   ├── css/
 │   ├── js/
 │   └── Views/
-│       └── (Views Blade di sini)
+│       └── (...file blade di sini)
 ├── services/
 │   └── error/
 │       ├── 404.blade.php
@@ -111,10 +106,14 @@ THE-FRAMEWORK/
 ├── .env
 ├── .env.example
 ├── .gitignore
+├── .htaccess 
+├── file.php  
+├── index.php 
 ├── artisan
 ├── composer.json
 ├── composer.lock
 └── README.md
+
 ```
 
 ## 🔧 Perintah Artisan
