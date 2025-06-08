@@ -162,24 +162,20 @@ Sesuaikan file `idx/dev.nix`:
 ```
 { pkgs, ... }: {
   channel = "stable-24.05";
-
   packages = [
-    pkgs.php
-    pkgs.php81Packages.composer
+    pkgs.php83
+    pkgs.php83Packages.composer
     pkgs.nodejs_20
     pkgs.python3
     pkgs.tailwindcss
   ];
-
   services.mysql = {
     enable = true;
     package = pkgs.mariadb;
   };
-
   env = {
-    PHP_PATH = "/usr/bin/php";
+    PHP_PATH = "${pkgs.php83}/bin/php";
   };
-
   idx = {
     extensions = [
       "rangav.vscode-thunder-client"
@@ -197,7 +193,7 @@ Sesuaikan file `idx/dev.nix`:
       enable = true;
       previews = {
         web = {
-          command = ["python3" "-m" "http.server" "$PORT" "--bind" "0.0.0.0"];
+          command = ["php" "-S" "localhost:$PORT" "-t" "htdocs"];
           manager = "web";
         };
       };
@@ -207,7 +203,7 @@ Sesuaikan file `idx/dev.nix`:
         default.openFiles = ["index.php"];
       };
       onStart = {
-        run-server = "php -S localhost:8080 -t htdocs";
+        run-server = "php -S localhost:8080";
       };
     };
   };
