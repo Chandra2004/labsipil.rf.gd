@@ -1,10 +1,10 @@
 <?php
     namespace {{NAMESPACE}}\App;
-
+    
     use {{NAMESPACE}}\App\Config;
     use {{NAMESPACE}}\Http\Controllers\ErrorController;
     use Exception;
-
+    
     class Router {
         private static array $routes = [];
         private static bool $routeFound = false;
@@ -36,6 +36,30 @@
                 exit;
             }
     
+            // 🔁 Static file handling: /assets/css/..., /assets/js/..., /assets/images/...
+            $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            if (preg_match('#^/assets/(css|js|images)/([^/]+)$#', $path, $matches)) {
+                $type = $matches[1];
+                $file = basename($matches[2]);
+                $fullPath = dirname(__DIR__, 2) . "/resources/$type/$file";
+    
+                if (file_exists($fullPath)) {
+                    $mime = match ($type) {
+                        'css' => 'text/css',
+                        'js' => 'application/javascript',
+                        'images' => mime_content_type($fullPath),
+                        default => 'application/octet-stream'
+                    };
+                    header("Content-Type: $mime");
+                    readfile($fullPath);
+                    exit;
+                } else {
+                    http_response_code(404);
+                    echo "Asset not found: $file";
+                    exit;
+                }
+            }
+    
             // Pengecekan APP_ENV untuk maintenance atau payment
             $appEnv = Config::get('APP_ENV');
             $errorController = new ErrorController();
@@ -58,7 +82,6 @@
                 ini_set('display_errors', '1');
             }
     
-            $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     
             try {
@@ -83,7 +106,6 @@
                         }
     
                         $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-    
                         call_user_func_array([$controller, $function], $params);
                         self::$routeFound = true;
                         return;
@@ -100,14 +122,12 @@
     
         private static function handleAbort($message = "Akses ditolak") {
             http_response_code(403);
-    
             if (Config::get('APP_ENV') !== 'production') {
                 echo "<strong>403 Forbidden</strong><br>";
                 echo "<strong>Alasan:</strong> $message<br>";
             } else {
                 echo "Akses ditolak";
             }
-    
             exit;
         }
     
