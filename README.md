@@ -17,8 +17,8 @@
 
 1. **Clone Proyek**:
    ```bash
-   git clone https://github.com/Chandra2004/THE-FRAMEWORK.git
-   cd THE-FRAMEWORK
+   git clone https://github.com/Chandra2004/FRAMEWORK.git
+   cd FRAMEWORK
    ```
 
 2. **Install Dependensi**:
@@ -46,7 +46,7 @@
 
 ## 📂 Struktur Direktori
 ```
-THE-FRAMEWORK/
+FRAMEWORK/
 ├── app/
 │   ├── App/
 │   │   ├── Blueprint.php
