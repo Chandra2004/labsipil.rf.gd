@@ -141,7 +141,7 @@
 
     function handleServe() {
         output('info', "Starting development server at http://localhost:8080...");
-        shell_exec("php -S localhost:8080 -t htdocs");
+        shell_exec("php -S localhost:8080");
     }
 
     function handleSetup() {
