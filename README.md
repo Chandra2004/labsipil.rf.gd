@@ -26,14 +26,19 @@
    composer install
    ```
 
-3. **Setup Proyek**:
+3. **Setup Proyek Awal**:
    ```bash
    php artisan setup
    ```
-   - Perintah ini akan membuat `.env`, memperbarui namespace, menjalankan migrasi, dan generate key enkripsi.
-   - Sesuaikan `DB_*` di `.env` jika dibutuhkan sebelum menjalankan.
+   - Perintah ini akan membuat `.env`, memperbarui namespace, dan mempersiapkan struktur awal.
 
-4. **Jalankan Server**:
+4. **Generate Key Enkripsi**:
+   ```bash
+   php artisan key:generate
+   ```
+   - Perintah ini akan menghasilkan `APP_KEY` secara aman dan otomatis menuliskannya ke `.env`.
+
+5. **Jalankan Server**:
    ```bash
    php artisan serve
    ```
@@ -97,11 +102,14 @@ FRAMEWORK/
 │   └── Views/
 │       └── (...file blade di sini)
 ├── services/
-│   └── error/
-│       ├── 404.blade.php
-│       ├── 500.blade.php
-│       ├── maintenance.blade.php
-│       └── payment.blade.php
+│   ├── error/
+│   │   ├── 404.blade.php
+│   │   ├── 500.blade.php
+│   │   ├── maintenance.blade.php
+│   │   └── payment.blade.php
+│   └── debug/
+│       ├── exception.blade.php
+│       └── fatal.blade.php
 ├── vendor/
 ├── .env
 ├── .env.example
@@ -113,12 +121,12 @@ FRAMEWORK/
 ├── composer.json
 ├── composer.lock
 └── README.md
-
 ```
 
 ## 🔧 Perintah Artisan
 
 - **Setup proyek**        : `php artisan setup`
+- **Generate key**        : `php artisan key:generate`
 - **Jalankan server**     : `php artisan serve`
 - **Migrasi database**    :
   - `php artisan migrate`
@@ -147,6 +155,7 @@ APP_NAME=TheFramework
 BASE_URL=http://localhost:8080
 
 ENCRYPTION_KEY=generated_key_here
+APP_KEY=generated_app_key_here
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
