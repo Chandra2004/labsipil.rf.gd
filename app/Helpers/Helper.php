@@ -9,16 +9,24 @@
             return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
         }
 
-        public static function redirect($url, $status = null, $message = null) {
-            // Simpan status dan message ke flash message jika ada
+        public static function redirect($url, $status = null, $message = null, $duration = 0) {
             if ($status && $message) {
-                self::set_flash('notification', ['status' => $status, 'message' => $message]);
+                $flashData = [
+                    'status' => $status,
+                    'message' => $message
+                ];
+
+                if ($duration > 0) {
+                    $flashData['expires_at'] = time() + $duration;
+                }
+
+                self::set_flash('notification', $flashData);
             }
 
-            // Redirect tanpa parameter status dan message di URL
             header("Location: " . self::url($url));
             exit();
         }
+
 
         public static function redirectToNotFound() {
             header("Location: " . self::url('/404'));
@@ -36,13 +44,23 @@
         }
 
         public static function get_flash($key) {
-            if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-            if (isset($_SESSION[$key])) {
-                $message = $_SESSION[$key];
-                unset($_SESSION[$key]);
-                return $message;
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
             }
-            return null;
+
+            if (!isset($_SESSION[$key])) {
+                return null;
+            }
+
+            $data = $_SESSION[$key];
+
+            if (isset($data['expires_at']) && time() > $data['expires_at']) {
+                unset($_SESSION[$key]);
+                return null;
+            }
+
+            unset($_SESSION[$key]);
+            return $data;
         }
 
         public static function session_get($key, $default = null) {
