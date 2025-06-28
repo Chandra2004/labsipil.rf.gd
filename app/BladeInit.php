@@ -30,10 +30,9 @@
                     return new PhpEngine();
                 });
 
-                // Tambahkan services/ sebagai path tambahan untuk Blade
                 $viewPaths = [
                     dirname(__DIR__) . '/resources/Views',
-                    dirname(__DIR__) . '/services', // Tambahkan services/
+                    dirname(__DIR__) . '/services',
                 ];
                 $finder = new FileViewFinder($filesystem, $viewPaths);
 
