@@ -306,6 +306,31 @@
         output('success', ucfirst($type) . " created successfully: " . str_replace($basePath . '/', '', $path));
     }
 
+    function handleGenerateAppKey() {
+        output('info', 'Generating APP_KEY...');
+
+        $newKey = bin2hex(random_bytes(32));
+        $envFile = __DIR__ . '/.env';
+
+        if (!file_exists($envFile)) {
+            output('error', ".env file not found.");
+            return;
+        }
+
+        $envContent = file_get_contents($envFile);
+
+        if (preg_match('/^APP_KEY=.*/m', $envContent)) {
+            $envContent = preg_replace('/^APP_KEY=.*/m', "APP_KEY=$newKey", $envContent);
+            output('info', 'APP_KEY updated.');
+        } else {
+            $envContent .= "\nAPP_KEY=$newKey";
+            output('info', 'APP_KEY added.');
+        }
+
+        file_put_contents($envFile, $envContent);
+        output('success', 'APP_KEY generated: ' . $newKey);
+    }
+
     // Mulai parsing command
     $command = $argv[1] ?? null;
     $options = array_slice($argv, 2);
@@ -344,6 +369,10 @@
             handleSetup();
             break;
 
+        case $command === 'key:generate':
+            handleGenerateAppKey();
+            break;
+
         case str_starts_with($command, 'make:'):
             handleMakeCommand($command, $options);
             break;
@@ -361,7 +390,8 @@
                 "- make:model Name\n" .
                 "- make:seeder Name\n" .
                 "- make:migration Name\n" .
-                "- make:middleware Name");
+                "- make:middleware Name\n" .
+                "- key:generate");
             break;
     }
 ?>
