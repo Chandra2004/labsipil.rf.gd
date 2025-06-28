@@ -121,7 +121,7 @@
             return $this->stmt->rowCount();
         }
 
-        // Transaction methods
+    
         public function beginTransaction() {
             return $this->dbh->beginTransaction();
         }
@@ -134,10 +134,29 @@
             return $this->dbh->rollBack();
         }
 
-        // Prevent cloning
+        /**
+         * Quote a value for safe SQL insertion
+         * @param mixed $value
+         * @return string
+         */
+        public function quote($value) {
+            if (is_null($value)) {
+                return 'NULL';
+            }
+
+            if (is_bool($value)) {
+                return $value ? '1' : '0';
+            }
+
+            if (is_numeric($value)) {
+                return (string) $value;
+            }
+
+            return $this->dbh->quote($value);
+        }
+
         private function __clone() { }
 
-        // Prevent unserialization
         public function __wakeup() {
             throw new PDOException("Cannot unserialize database connection");
         }
