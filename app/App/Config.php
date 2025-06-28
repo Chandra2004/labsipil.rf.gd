@@ -1,18 +1,19 @@
 <?php
-namespace {{NAMESPACE}}\App;
+    namespace {{NAMESPACE}}\App;
 
-use Dotenv\Dotenv;
+    use Dotenv\Dotenv;
 
-class Config
-{
-    public static function loadEnv()
+    class Config
     {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-        $dotenv->load();
-    }
+        public static function loadEnv()
+        {
+            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+            $dotenv->load();
+        }
 
-    public static function get($key, $default = null)
-    {
-        return $_ENV[$key] ?? $default;
+        public static function get($key, $default = null)
+        {
+            return $_ENV[$key] ?? $default;
+        }
     }
-}
+?>
