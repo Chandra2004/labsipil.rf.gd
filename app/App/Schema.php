@@ -40,5 +40,29 @@
             $db->query($sql);
             $db->execute();
         }
+
+        public static function insert(string $table, array $rows){
+            if (empty($rows)) return;
+
+            $db = Database::getInstance();
+            $columns = array_keys($rows[0]);
+            $columnList = "`" . implode("`, `", $columns) . "`";
+
+            $values = [];
+            foreach ($rows as $row) {
+                $escaped = array_map(function($value) use ($db) {
+                    return $db->quote($value); // Pastikan Database class punya method quote()
+                }, $row);
+                $values[] = "(" . implode(", ", $escaped) . ")";
+            }
+
+            $sql = "INSERT INTO `$table` ($columnList) VALUES " . implode(", ", $values) . ";";
+
+            output('info', "SQL Insert: $sql");
+
+            $db->query($sql);
+            $db->execute();
+        }
+
     }
 ?>
