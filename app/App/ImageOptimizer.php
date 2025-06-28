@@ -14,7 +14,6 @@ class ImageOptimizer
      */
     public static function optimizeToWebp($sourcePath, $destinationPath, $maxWidth = 1024, $quality = 80)
     {
-        // Deteksi jenis file
         $info = getimagesize($sourcePath);
         if (!$info) return false;
 
@@ -26,15 +25,14 @@ class ImageOptimizer
                 break;
             case IMAGETYPE_PNG:
                 $image = imagecreatefrompng($sourcePath);
-                imagepalettetotruecolor($image); // untuk menghindari error transparansi
+                imagepalettetotruecolor($image);
                 imagealphablending($image, true);
                 imagesavealpha($image, true);
                 break;
             default:
-                return false; // Tidak didukung
+                return false;
         }
 
-        // Resize jika lebih besar dari $maxWidth
         if ($width > $maxWidth) {
             $ratio = $height / $width;
             $newWidth = $maxWidth;
@@ -46,7 +44,6 @@ class ImageOptimizer
             $image = $resized;
         }
 
-        // Konversi ke WebP
         $success = imagewebp($image, $destinationPath, $quality);
         imagedestroy($image);
 
