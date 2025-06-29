@@ -1,9 +1,9 @@
 <?php
 
-namespace Lumino\DarmaSakti\Http\Controllers\Services;
+namespace {{NAMESPACE}}\Http\Controllers\Services;
 
-use Lumino\DarmaSakti\App\{Config, Database, View, CacheManager};
-use Lumino\DarmaSakti\Helpers\Helper;
+use {{NAMESPACE}}\App\{Config, Database, View, CacheManager};
+use {{NAMESPACE}}\Helpers\Helper;
 use Exception;
 
 class DebugController
