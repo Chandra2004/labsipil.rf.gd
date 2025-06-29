@@ -2,8 +2,8 @@
 namespace {{NAMESPACE}}\App;
 
 use {{NAMESPACE}}\App\Config;
-use {{NAMESPACE}}\Http\Controllers\ErrorController;
-use {{NAMESPACE}}\Http\Controllers\DebugController;
+use {{NAMESPACE}}\Http\Controllers\Services\ErrorController;
+use {{NAMESPACE}}\Http\Controllers\Services\DebugController;
 use Exception;
 
 class Router {
