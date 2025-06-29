@@ -141,7 +141,23 @@
 
     function handleServe() {
         output('info', "Starting development server at http://localhost:8080...");
-        shell_exec("php -S localhost:8080");
+        $routerFile = __DIR__ . '/server.php';
+
+        if (!file_exists($routerFile)) {
+            file_put_contents($routerFile, <<<PHP
+    <?php
+    \$path = parse_url(\$_SERVER["REQUEST_URI"], PHP_URL_PATH);
+    \$file = __DIR__ . \$path;
+
+    if (\$path !== '/' && file_exists(\$file)) {
+        return false;
+    }
+    require_once __DIR__ . '/index.php';
+    PHP);
+            output('success', "server.php created.");
+        }
+
+        passthru("php -S localhost:8080 server.php");
     }
 
     function handleSetup() {
