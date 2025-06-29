@@ -61,9 +61,9 @@ class Router {
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
         // Static asset handler
-        if (preg_match('#^/assets/(css|js|images)/([^/]+)$#', $path, $matches)) {
+        if (preg_match('#^/assets/(css|js|images)/(.*)$#', $path, $matches)) {
             $type = $matches[1];
-            $file = basename($matches[2]);
+            $file = $matches[2];
             $fullPath = dirname(__DIR__, 2) . "/resources/$type/$file";
 
             if (file_exists($fullPath)) {
