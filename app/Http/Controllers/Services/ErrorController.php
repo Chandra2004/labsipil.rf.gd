@@ -1,8 +1,8 @@
 <?php
-    namespace Lumino\DarmaSakti\Http\Controllers\Services;
+    namespace {{NAMESPACE}}\Http\Controllers\Services;
 
-    use Lumino\DarmaSakti\App\Config;
-    use Lumino\DarmaSakti\App\View;
+    use {{NAMESPACE}}\App\Config;
+    use {{NAMESPACE}}\App\View;
 
     class ErrorController {
         function error403() {
