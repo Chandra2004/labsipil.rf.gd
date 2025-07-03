@@ -29,6 +29,7 @@
                 'userData' => $this->homeModel->getUserData()['users'] ?? [],
                 'status' => $this->checkDatabaseConnection(),
                 'notification' => $notification,
+                // 'nonce' => $nonce = "hello",
             ]);
         }
 
@@ -180,7 +181,7 @@
             }
 
             // Buat direktori upload jika belum ada
-            $uploadDir = ROOT_DIR . '/private-uploads/user-pictures/';
+            $uploadDir = ROOT_DIR . '/private-Uploads/user-pictures/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
@@ -191,43 +192,56 @@
 
             // Resize dan konversi ke WebP
             $source = null;
-            if ($ext === 'jpg' || $ext === 'jpeg') {
-                $source = imagecreatefromjpeg($file['tmp_name']);
-            } elseif ($ext === 'png') {
-                $source = imagecreatefrompng($file['tmp_name']);
-            }
-
-            if (!$source) {
-                return new \Exception("Gagal membaca gambar.");
-            }
-
-            // Resize jika terlalu lebar
-            $maxWidth = 800;
-            $width = imagesx($source);
-            $height = imagesy($source);
-
-            if ($width > $maxWidth) {
-                $newHeight = intval($height * ($maxWidth / $width));
-                $resized = imagecreatetruecolor($maxWidth, $newHeight);
-                imagecopyresampled($resized, $source, 0, 0, 0, 0, $maxWidth, $newHeight, $width, $height);
-                imagedestroy($source);
-                $source = $resized;
-            }
-
-            // Simpan ke WebP
-            imagewebp($source, $targetPath, 80);
-            imagedestroy($source);
-
-            // Hapus gambar lama (jika ada)
-            if ($userId) {
-                $old = $this->homeModel->getUserDetail($userId)['profile_picture'] ?? null;
-                if ($old && file_exists($uploadDir . $old)) {
-                    unlink($uploadDir . $old);
+            try {
+                if ($ext === 'jpg' || $ext === 'jpeg') {
+                    $source = @imagecreatefromjpeg($file['tmp_name']);
+                } elseif ($ext === 'png') {
+                    $source = @imagecreatefrompng($file['tmp_name']);
                 }
+
+                if (!$source) {
+                    return new \Exception("Gagal membaca gambar.");
+                }
+
+                // Resize jika terlalu lebar
+                $maxWidth = 800;
+                $width = imagesx($source);
+                $height = imagesy($source);
+
+                if ($width > $maxWidth) {
+                    $newHeight = intval($height * ($maxWidth / $width));
+                    $resized = imagecreatetruecolor($maxWidth, $newHeight);
+                    imagecopyresampled($resized, $source, 0, 0, 0, 0, $maxWidth, $newHeight, $width, $height);
+                    imagedestroy($source);
+                    $source = $resized;
+                }
+
+                // Jaga transparansi untuk PNG
+                if ($ext === 'png') {
+                    imagealphablending($source, false);
+                    imagesavealpha($source, true);
+                }
+
+                // Simpan ke WebP
+                imagewebp($source, $targetPath, 80);
+                imagedestroy($source);
+
+                // Hapus gambar lama (jika ada)
+                if ($userId) {
+                    $old = $this->homeModel->getUserDetail($userId)['profile_picture'] ?? null;
+                    if ($old && file_exists($uploadDir . $old)) {
+                        unlink($uploadDir . $old);
+                    }
+                }
+
+                return $fileName;
+            } catch (\Exception $e) {
+                if ($source) {
+                    imagedestroy($source);
+                }
+                return new \Exception("Error memproses gambar: " . $e->getMessage());
             }
-
-            return $fileName;
         }
-
     }
+
 ?>
