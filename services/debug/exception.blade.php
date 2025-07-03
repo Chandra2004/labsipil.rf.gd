@@ -161,7 +161,7 @@
                                 <span>Line {{ $line }}</span>
                             </div>
                             <pre class="text-gray-300 font-mono text-sm p-4 overflow-x-auto">@foreach(explode("\n", file_get_contents($file)) as $i => $codeLine)
-<div class="code-line {{ $i + 1 == $line ? 'highlight-line text-amber-300' : '' }}" data-line="{{ $i + 1 }}">{{ htmlspecialchars($codeLine) }}</div>
+<div class="code-line {{ $i + 1 == $line ? 'highlight-line text-amber-300' : '' }}" data-line="{{ $i + 1 }}">{!! htmlspecialchars($codeLine) !!}</div>
 @endforeach</pre>
                         </div>
                     </div>
