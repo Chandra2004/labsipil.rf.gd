@@ -29,7 +29,6 @@
                 'userData' => $this->homeModel->getUserData()['users'] ?? [],
                 'status' => $this->checkDatabaseConnection(),
                 'notification' => $notification,
-                // 'nonce' => $nonce = "hello",
             ]);
         }
 
