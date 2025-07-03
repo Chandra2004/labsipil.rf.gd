@@ -24,13 +24,31 @@ class Router {
     }
 
     public static function run() {
+        ob_start(); // Start output buffer
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
         Config::loadEnv();
 
-        // Tangani global exception dan fatal error
+        // Error handler for warnings
+        set_error_handler(function ($severity, $message, $file, $line) {
+            if (!(error_reporting() & $severity)) return;
+
+            if (in_array($severity, [E_WARNING, E_USER_WARNING, E_NOTICE, E_USER_NOTICE])) {
+                if (Config::get('APP_ENV') !== 'production') {
+                    DebugController::showWarning([
+                        'message' => $message,
+                        'file' => $file,
+                        'line' => $line
+                    ]);
+                }
+            }
+
+            throw new \ErrorException($message, 0, $severity, $file, $line);
+        });
+
+        // Global exception handler
         set_exception_handler(function ($e) {
             if (Config::get('APP_ENV') === 'production') {
                 (new ErrorController())->error500();
@@ -39,6 +57,7 @@ class Router {
             }
         });
 
+        // Shutdown function for fatal errors
         register_shutdown_function(function () {
             $error = error_get_last();
             if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_COMPILE_ERROR, E_CORE_ERROR])) {
@@ -48,9 +67,10 @@ class Router {
                     DebugController::showFatal($error);
                 }
             }
+            ob_end_flush();
         });
 
-        // Tangani preflight CORS
+        // CORS OPTIONS handler
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header('Access-Control-Allow-Origin: *');
             header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -60,30 +80,42 @@ class Router {
 
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // Static asset handler
-        if (preg_match('#^/assets/(css|js|images)/(.*)$#', $path, $matches)) {
-            $type = $matches[1];
-            $file = $matches[2];
-            $fullPath = dirname(__DIR__, 2) . "/resources/$type/$file";
+        // Asset handler: /assets/...
+        if (preg_match('#^/assets/(.*)$#', $path, $matches)) {
+            $filePath = $matches[1];
+            $fullPath = dirname(__DIR__, 2) . "/resources/$filePath";
 
             if (file_exists($fullPath)) {
-                $mime = match ($type) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mime = match ($ext) {
                     'css' => 'text/css',
                     'js' => 'application/javascript',
-                    'images' => mime_content_type($fullPath),
-                    default => 'application/octet-stream'
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    'webp' => 'image/webp',
+                    'woff' => 'font/woff',
+                    'woff2' => 'font/woff2',
+                    'ttf' => 'font/ttf',
+                    'otf' => 'font/otf',
+                    'eot' => 'application/vnd.ms-fontobject',
+                    'ico' => 'image/x-icon',
+                    'json', 'map' => 'application/json',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
                 };
+
                 header("Content-Type: $mime");
                 readfile($fullPath);
                 exit;
             } else {
                 http_response_code(404);
-                echo "Asset not found: $file";
+                echo "Asset not found: $filePath";
                 exit;
             }
         }
 
-        // Mode maintenance/payment
+        // Maintenance & Payment Mode
         $appEnv = Config::get('APP_ENV');
         $errorController = new ErrorController();
 
@@ -95,7 +127,7 @@ class Router {
             exit;
         }
 
-        // Error reporting
+        // Error Reporting Mode
         if ($appEnv === 'production') {
             error_reporting(0);
             ini_set('display_errors', '0');
@@ -113,13 +145,9 @@ class Router {
 
                 if (preg_match($route['path'], $path, $matches)) {
                     foreach ($route['middleware'] as $middleware) {
-                        if (is_array($middleware)) {
-                            $className = $middleware[0];
-                            $params = array_slice($middleware, 1);
-                            $middlewareInstance = new $className(...$params);
-                        } else {
-                            $middlewareInstance = new $middleware();
-                        }
+                        $middlewareInstance = is_array($middleware)
+                            ? new $middleware[0](...array_slice($middleware, 1))
+                            : new $middleware();
                         $middlewareInstance->before();
                     }
 
@@ -161,6 +189,7 @@ class Router {
     }
 
     private static function handle500(Exception $e) {
+        if (ob_get_length()) ob_end_clean();
         http_response_code(500);
 
         if (Config::get('APP_ENV') === 'production') {
@@ -174,6 +203,7 @@ class Router {
     }
 
     private static function handle404() {
+        if (ob_get_length()) ob_end_clean();
         http_response_code(404);
         $controller = new ErrorController();
         $controller->error404();
