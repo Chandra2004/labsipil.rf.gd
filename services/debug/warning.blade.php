@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Framework Warning</title>
   <meta name="robots" content="noindex, nofollow" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
   <script>
     tailwind.config = {
       theme: {

@@ -8,24 +8,10 @@
     <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2Ztz7uNKx5W4ZwFxFc00k6QjBgT_2y8A6w&s" type="image/x-icon">
     <title>Register - Civil Praktikum Manager</title>
     
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/app.css') }}">
-
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .font-headline {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
 </head>
 
 <body class="bg-[#E0E8E9] flex min-h-screen items-center justify-center p-4">
@@ -50,7 +36,7 @@
         </div>
         <div class="p-6">
             <div>
-                @include('auth.notification')
+                @include('notification.notification')
             </div>
             <form class="grid gap-4" action="/register/auth" method="POST">
                 @csrf

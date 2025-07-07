@@ -8,72 +8,10 @@
     <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2Ztz7uNKx5W4ZwFxFc00k6QjBgT_2y8A6w&s" type="image/x-icon">
     <title>{{ $title }}</title>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/app.css') }}">
+    <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        .tab-button {
-            transition: all 0.3s ease;
-        }
-
-        .tab-button.active {
-            background-color: #468B97;
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .hero-section {
-            position: relative;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        .slideshow-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .slideshow-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .slideshow-image.active {
-            opacity: 1;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
 </head>
 
 <body class="bg-background min-h-screen flex flex-col font-body antialiased">
@@ -166,6 +104,7 @@
 
         lucide.createIcons();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 </body>
 
 </html>
