@@ -1,8 +1,8 @@
 <?php
-    namespace {{NAMESPACE}}\Http\Controllers\Services;
+    namespace ITATS\PraktikumTeknikSipil\Http\Controllers\Services;
 
-    use {{NAMESPACE}}\App\Config;
-    use {{NAMESPACE}}\App\View;
+    use ITATS\PraktikumTeknikSipil\App\Config;
+    use ITATS\PraktikumTeknikSipil\App\View;
 
     class ErrorController {
         function error403() {

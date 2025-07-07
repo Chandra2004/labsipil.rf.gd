@@ -1,9 +1,9 @@
 <?php
-    namespace {{NAMESPACE}}\App;
+    namespace ITATS\PraktikumTeknikSipil\App;
 
     use Closure;
-    use {{NAMESPACE}}\App\Database;
-    use {{NAMESPACE}}\App\Blueprint;
+    use ITATS\PraktikumTeknikSipil\App\Database;
+    use ITATS\PraktikumTeknikSipil\App\Blueprint;
 
     class Schema {
         public static function create($table, Closure $callback) {

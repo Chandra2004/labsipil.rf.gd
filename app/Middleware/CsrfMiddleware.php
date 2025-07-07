@@ -1,5 +1,5 @@
 <?php
-    namespace {{NAMESPACE}}\Middleware;
+    namespace ITATS\PraktikumTeknikSipil\Middleware;
 
     class CsrfMiddleware implements Middleware {
         public static function generateToken() {

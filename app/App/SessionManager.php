@@ -1,7 +1,7 @@
 <?php
-    namespace {{NAMESPACE}}\App;
+    namespace ITATS\PraktikumTeknikSipil\App;
 
-    use {{NAMESPACE}}\App\Config;
+    use ITATS\PraktikumTeknikSipil\App\Config;
 
     class SessionManager {
         public static function startSecureSession() {

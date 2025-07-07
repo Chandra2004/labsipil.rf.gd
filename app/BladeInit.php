@@ -1,5 +1,5 @@
 <?php
-    namespace {{NAMESPACE}};
+    namespace ITATS\PraktikumTeknikSipil;
 
     use Illuminate\View\Factory;
     use Illuminate\Events\Dispatcher;

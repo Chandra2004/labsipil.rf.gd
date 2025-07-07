@@ -1,9 +1,9 @@
 <?php
 
-namespace {{NAMESPACE}}\Http\Controllers\Services;
+namespace ITATS\PraktikumTeknikSipil\Http\Controllers\Services;
 
-use {{NAMESPACE}}\App\{Config, Database, View, CacheManager};
-use {{NAMESPACE}}\Helpers\Helper;
+use ITATS\PraktikumTeknikSipil\App\{Config, Database, View, CacheManager};
+use ITATS\PraktikumTeknikSipil\Helpers\Helper;
 use Exception;
 
 class DebugController

@@ -1,5 +1,5 @@
 <?php
-    namespace {{NAMESPACE}}\App;
+    namespace ITATS\PraktikumTeknikSipil\App;
 
     class CacheManager {
         protected static string $cacheDir = __DIR__ . '/../Storage/cache/';

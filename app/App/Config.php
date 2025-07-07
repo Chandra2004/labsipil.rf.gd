@@ -1,5 +1,5 @@
 <?php
-    namespace {{NAMESPACE}}\App;
+    namespace ITATS\PraktikumTeknikSipil\App;
 
     use Dotenv\Dotenv;
 

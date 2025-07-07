@@ -1,22 +1,22 @@
 {
-    "name": "vendor/project",
-    "description": "Your project description",
+    "name": "itats/praktikum-teknik-sipil",
+    "description": "Praktikum Teknik Sipil Berbasis Web adalah sebuah program pembelajaran interaktif yang dirancang untuk memberikan pengalaman praktis dalam bidang teknik sipil melalui platform digital. Program ini memungkinkan mahasiswa untuk mempelajari dan menerapkan konsep-konsep teknik sipil, seperti analisis struktur, desain geoteknik, manajemen proyek, dan hidrologi, menggunakan simulasi berbasis web, perangkat lunak khusus, dan studi kasus virtual.",
     "autoload": {
         "psr-4": {
-            "{{NAMESPACE}}\\": "app/",
-            "{{NAMESPACE}}\\App\\": "app/App/",
-            "{{NAMESPACE}}\\Http\\Controllers\\": "app/Http/Controllers/",
-            "{{NAMESPACE}}\\Middleware\\": "app/Middleware/",
-            "{{NAMESPACE}}\\Models\\": "app/Models/",
-            "{{NAMESPACE}}\\Models\\Seeders\\": "app/Models/Seeders/",
-            "{{NAMESPACE}}\\Database\\Migrations\\": "database/migrations/",
-            "{{NAMESPACE}}\\Database\\Seeders\\": "database/seeders/"
+            "ITATS\\PraktikumTeknikSipil\\": "app/",
+            "ITATS\\PraktikumTeknikSipil\\App\\": "app/App/",
+            "ITATS\\PraktikumTeknikSipil\\Http\\Controllers\\": "app/Http/Controllers/",
+            "ITATS\\PraktikumTeknikSipil\\Middleware\\": "app/Middleware/",
+            "ITATS\\PraktikumTeknikSipil\\Models\\": "app/Models/",
+            "ITATS\\PraktikumTeknikSipil\\Models\\Seeders\\": "app/Models/Seeders/",
+            "Database\\Migrations\\": "database/migrations/",
+            "Database\\Seeders\\": "database/seeders/"
         }
     },
     "authors": [
         {
-            "name": "Your Name",
-            "email": "your-email@gmail.com"
+            "name": "ITATS",
+            "email": "itats@ac.id"
         }
     ],
     "require": {
@@ -35,7 +35,7 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "{{NAMESPACE}}\\App\\Router::cacheRoutes"
+            "ITATS\\PraktikumTeknikSipil\\App\\Router::cacheRoutes"
         ],
         "post-install-cmd": [
             "php update-namespace.php"

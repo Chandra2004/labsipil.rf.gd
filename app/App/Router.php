@@ -1,9 +1,9 @@
 <?php
-namespace {{NAMESPACE}}\App;
+namespace ITATS\PraktikumTeknikSipil\App;
 
-use {{NAMESPACE}}\App\Config;
-use {{NAMESPACE}}\Http\Controllers\Services\ErrorController;
-use {{NAMESPACE}}\Http\Controllers\Services\DebugController;
+use ITATS\PraktikumTeknikSipil\App\Config;
+use ITATS\PraktikumTeknikSipil\Http\Controllers\Services\ErrorController;
+use ITATS\PraktikumTeknikSipil\Http\Controllers\Services\DebugController;
 use Exception;
 
 class Router {

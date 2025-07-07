@@ -1,7 +1,7 @@
 <?php
-    namespace {{NAMESPACE}}\app;
+    namespace ITATS\PraktikumTeknikSipil\app;
 
-    use {{NAMESPACE}}\BladeInit;
+    use ITATS\PraktikumTeknikSipil\BladeInit;
 
     class View {
         public static function render(string $view, $model)

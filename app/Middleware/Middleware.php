@@ -1,5 +1,5 @@
 <?php
-    namespace {{NAMESPACE}}\Middleware;
+    namespace ITATS\PraktikumTeknikSipil\Middleware;
 
     interface Middleware {
         function before();

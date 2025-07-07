@@ -1,18 +1,31 @@
 <?php
     require_once __DIR__ . '/vendor/autoload.php';
     require_once __DIR__ . '/app/Helpers/helpers.php';
-    
+
     define('ROOT_DIR', __DIR__); // Sudah di root hosting
+
+    use ITATS\PraktikumTeknikSipil\BladeInit;
+    use ITATS\PraktikumTeknikSipil\App\Config;
+    use ITATS\PraktikumTeknikSipil\App\Router;
+    use ITATS\PraktikumTeknikSipil\App\SessionManager;
+
+    //Middleware
+    use ITATS\PraktikumTeknikSipil\Middleware\AuthMiddleware;
+    use ITATS\PraktikumTeknikSipil\Middleware\CsrfMiddleware;
+    use ITATS\PraktikumTeknikSipil\Middleware\WAFMiddleware;
+    use ITATS\PraktikumTeknikSipil\Middleware\RoleMiddleware;
+
+    // Validator Middleware
+    use ITATS\PraktikumTeknikSipil\Middleware\Validator\RegisterValidator;
+    use ITATS\PraktikumTeknikSipil\Middleware\Validator\LoginValidator;
     
-    use {{NAMESPACE}}\BladeInit;
-    use {{NAMESPACE}}\App\Config;
-    use {{NAMESPACE}}\App\Router;
-    use {{NAMESPACE}}\App\SessionManager;
-    use {{NAMESPACE}}\Middleware\CsrfMiddleware;
-    use {{NAMESPACE}}\Middleware\WAFMiddleware;
-    use {{NAMESPACE}}\Middleware\ValidationMiddleware;
-    use {{NAMESPACE}}\Http\Controllers\HomeController;
-    
+    // Controllers
+    use ITATS\PraktikumTeknikSipil\Http\Controllers\Auth\RegisterController;
+    use ITATS\PraktikumTeknikSipil\Http\Controllers\Auth\LoginController;
+    use ITATS\PraktikumTeknikSipil\Http\Controllers\Homepage\HomeController;
+    use ITATS\PraktikumTeknikSipil\Http\Controllers\News\NewsController;
+    use ITATS\PraktikumTeknikSipil\Http\Controllers\Dashboard\DashboardController;
+
     SessionManager::startSecureSession();
     Config::loadEnv();
     
@@ -24,42 +37,35 @@
     header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
     header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
     
-    // Rate limiting sederhana
-    $clientIp = $_SERVER['REMOTE_ADDR'];
-    $rateLimitFile = __DIR__ . '/app/Storage/cache/ratelimit/' . md5($clientIp);
-    $limit = 100; $window = 120;
-    
-    if (!file_exists(dirname($rateLimitFile))) {
-        mkdir(dirname($rateLimitFile), 0755, true);
-    }
-    $hits = 0;
-    if (file_exists($rateLimitFile)) {
-        $data = json_decode(file_get_contents($rateLimitFile), true);
-        $hits = (time() - $data['timestamp'] < $window) ? $data['hits'] : 0;
-    }
-    $hits++;
-    file_put_contents($rateLimitFile, json_encode(['hits' => $hits, 'timestamp' => time()]));
-    if ($hits > $limit) {
-        http_response_code(429);
-        exit('Too many requests.');
-    }
-    
     // Jalankan router
     CsrfMiddleware::generateToken();
-    
+
     Router::add('GET', '/', HomeController::class, 'index', [WAFMiddleware::class]);
-    Router::add('GET', '/user', HomeController::class, 'user', [WAFMiddleware::class]);
-    Router::add('POST', '/user', HomeController::class, 'createUser', [
-        WAFMiddleware::class, CsrfMiddleware::class, ValidationMiddleware::class
+
+    Router::add('GET', '/news', NewsController::class, 'index', [WAFMiddleware::class]);
+    Router::add('GET', '/news/page/{page}', NewsController::class, 'index', [WAFMiddleware::class]);
+    Router::add('GET', '/news/{category}/{id}/{slug}', NewsController::class, 'detail', [WAFMiddleware::class]);
+
+    Router::add('GET', '/login', LoginController::class, 'index', [WAFMiddleware::class]);
+    Router::add('POST', '/login/auth', LoginController::class, 'loginUser', [WAFMiddleware::class, CsrfMiddleware::class, LoginValidator::class]);
+    
+    Router::add('GET', '/register', RegisterController::class, 'index', [WAFMiddleware::class]);
+    Router::add('POST', '/register/auth', RegisterController::class, 'registerUser', [WAFMiddleware::class, CsrfMiddleware::class, RegisterValidator::class]);
+
+    Router::add('GET', '/dashboard/superadmin', DashboardController::class, 'superAdminDashboard', [
+        AuthMiddleware::class,
+        WAFMiddleware::class,
+        [RoleMiddleware::class, ['SuperAdmin']]
     ]);
-    Router::add('GET', '/user/information/{id}', HomeController::class, 'detail', [WAFMiddleware::class]);
-    Router::add('GET', '/user/{id}/delete', HomeController::class, 'deleteUser', [
-        WAFMiddleware::class, ValidationMiddleware::class
-    ]);
-    Router::add('POST', '/user/{id}/update', HomeController::class, 'updateUser', [
-        WAFMiddleware::class, CsrfMiddleware::class, ValidationMiddleware::class
+
+    Router::add('GET', '/dashboard/praktikan', DashboardController::class, 'praktikanDashboard', [
+        AuthMiddleware::class,
+        WAFMiddleware::class,
+        [RoleMiddleware::class, ['Praktikan']]
     ]);
     
+    Router::add('GET', '/logout', LoginController::class, 'logout', [WAFMiddleware::class]);
+
     BladeInit::init();
     Router::run();
 ?>

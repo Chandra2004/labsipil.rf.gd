@@ -1,7 +1,7 @@
 <?php
-    namespace {{NAMESPACE}}\Database;
+    namespace ITATS\PraktikumTeknikSipil\Database;
 
-    use {{NAMESPACE}}\App\Database;
+    use ITATS\PraktikumTeknikSipil\App\Database;
 
     abstract class Migration {
         protected Database $db;

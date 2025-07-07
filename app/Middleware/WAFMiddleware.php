@@ -1,7 +1,7 @@
 <?php
-    namespace {{NAMESPACE}}\Middleware;
+    namespace ITATS\PraktikumTeknikSipil\Middleware;
 
-    use {{NAMESPACE}}\App\Logging;
+    use ITATS\PraktikumTeknikSipil\App\Logging;
 
     class WAFMiddleware implements Middleware {
         public function before() {

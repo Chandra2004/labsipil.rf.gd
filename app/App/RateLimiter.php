@@ -1,7 +1,7 @@
 <?php
-    namespace {{NAMESPACE}}\App;
+    namespace ITATS\PraktikumTeknikSipil\App;
 
-    use {{NAMESPACE}}\App\Logging;
+    use ITATS\PraktikumTeknikSipil\App\Logging;
 
     class RateLimiter {
         private static $fallbackDir = __DIR__ . '/../Storage/cache/ratelimit/';

@@ -1,5 +1,5 @@
 <?php
-    namespace {{NAMESPACE}}\App;
+    namespace ITATS\PraktikumTeknikSipil\App;
 
     use Monolog\Logger;
     use Monolog\Handler\StreamHandler;

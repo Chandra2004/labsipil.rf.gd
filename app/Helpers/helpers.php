@@ -1,5 +1,5 @@
 <?php
-    use {{NAMESPACE}}\Helpers\Helper;
+    use ITATS\PraktikumTeknikSipil\Helpers\Helper;
 
     if (!function_exists('url')) {
         function url($path = '') {
