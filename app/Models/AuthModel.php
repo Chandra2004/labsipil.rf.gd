@@ -17,7 +17,7 @@ class AuthModel extends Database {
         $this->db = Database::getInstance();
     }
 
-    public function registerUser($npmMahasiswa, $fullNameMahasiswa, $phoneMahasiswa, $emailMahasiswa, $passwordMahasiswa) {
+    public function registerUser($npmMahasiswa, $fullNameMahasiswa, $phoneMahasiswa, $emailMahasiswa, $passwordMahasiswa, $initials) {
         // Cek email
         $this->db->query("SELECT COUNT(*) as count FROM users WHERE email = :email");
         $this->db->bind(':email', $emailMahasiswa);
@@ -45,14 +45,16 @@ class AuthModel extends Database {
         // Insert User
         $passwordMahasiswa = password_hash($passwordMahasiswa, PASSWORD_BCRYPT);
 
-        $this->db->query("INSERT INTO users (uid, full_name, phone, email, password, npm_nip, role_uid) VALUES (:uid, :full_name, :phone, :email, :password, :npm_nip, :role_uid)");
+        $this->db->query("INSERT INTO users (uid, full_name, phone, email, password, npm_nip, role_uid, initials) VALUES (:uid, :full_name, :phone, :email, :password, :npm_nip, :role_uid, :initials)");
         $this->db->bind(':uid', Helper::generateUUID(10));
         $this->db->bind(':full_name', $fullNameMahasiswa);
         $this->db->bind(':phone', $phoneMahasiswa);
         $this->db->bind(':email', $emailMahasiswa);
         $this->db->bind(':password', $passwordMahasiswa);
         $this->db->bind(':npm_nip', $npmMahasiswa);
-        $this->db->bind(':role_uid', 'Nc84Rko0PC');
+        $this->db->bind(':role_uid', 'azJw5fNCEX');
+        $this->db->bind(':initials', $initials);
+
 
         return $this->db->execute();
     }

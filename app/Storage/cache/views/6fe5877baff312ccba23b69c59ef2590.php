@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
+    <link rel="stylesheet" href="<?php echo e(url('/assets/css/custom.css')); ?>">
 </head>
 
 <body class="bg-background min-h-screen flex flex-col font-body antialiased">
@@ -31,21 +31,21 @@
                 <span>Civil Praktikum</span>
             </a>
             <nav class="flex items-center gap-4">
-                @php
+                <?php
                 $userRole = isset($_SESSION['user']['role_name']) ? $_SESSION['user']['role_name'] : null;
-                @endphp
-                @if ($userRole == null)
+                ?>
+                <?php if($userRole == null): ?>
                 <a href="/login"
                     class="text-sm font-medium text-gray-700 hover:text-primary px-4 py-2 rounded-md transition-colors"
                     aria-label="Masuk ke akun">Login</a>
                 <a href="/register"
                     class="text-sm font-medium bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md transition-colors"
                     aria-label="Daftar akun baru">Register</a>
-                @else
+                <?php else: ?>
                 <a href="/logout"
                     class="text-sm font-medium bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md transition-colors"
                     aria-label="Daftar akun baru">Logout</a>
-                @endif
+                <?php endif; ?>
             </nav>
         </div>
     </header>
@@ -55,7 +55,7 @@
         <div class="error-container">
             <div class="error-content">
                 <!-- Error Number -->
-                @yield('content-error')
+                <?php echo $__env->yieldContent('content-error'); ?>
             </div>
         </div>
     </main>
@@ -69,4 +69,4 @@
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 </body>
 
-</html>
+</html><?php /**PATH C:\laragon\www\services/errors/layout/layout.blade.php ENDPATH**/ ?>

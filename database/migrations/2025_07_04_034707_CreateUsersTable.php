@@ -17,16 +17,20 @@ class Migration_2025_07_04_034707_CreateUsersTable
             $table->string('email')->unique();
             $table->string('password');
             $table->string('profile_picture')->nullable();
-
+            
+            
             $table->string('npm_nip')->unique();
             $table->string('prodi');
             $table->string('posisi')->nullable();
             
             $table->string('semester');
             $table->string('id_card')->nullable();
-
+            
             $table->string('role_uid');
             $table->foreign('role_uid')->references('uid')->on('roles')->onDelete('cascade');
+
+            $table->string('initials');
+            
             $table->timestamps();
         });
     }

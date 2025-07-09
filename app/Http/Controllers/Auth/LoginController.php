@@ -45,6 +45,7 @@ class LoginController
                 'uid' => $user['uid'],
                 'full_name' => $user['full_name'],
                 'email' => $user['email'],
+                'initials' => $user['initials'],
                 'role_name' => $user['role_name'],
             ];
 
@@ -67,6 +68,6 @@ class LoginController
 
     public function logout() {
         session_destroy();
-        return Helper::redirect('/login', 'success', 'Logged out successfully.');
+        return Helper::redirect('/', 'success', 'Logged out successfully.');
     }
 }

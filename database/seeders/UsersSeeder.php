@@ -33,7 +33,8 @@ class UsersSeeder
                 'email' => 's@gmail.com',
                 'password' => password_hash('superAdmin123', PASSWORD_BCRYPT),
                 'npm_nip' => '06.2024.1.07780',
-                'role_uid' => 'dvpAfaj800',
+                'role_uid' => 'SWjtFccjC7',
+                'initials' => 'SA'
             ],
             [
                 'uid' => Helper::generateUUID(10),
@@ -42,7 +43,8 @@ class UsersSeeder
                 'email' => 'p@gmail.com',
                 'password' => password_hash('praktikan123123', PASSWORD_BCRYPT),
                 'npm_nip' => '06.2024.1.07781',
-                'role_uid' => 'sC6hKGyp8l',
+                'role_uid' => 'azJw5fNCEX',
+                'initials' => 'P'
             ],
         ];
 

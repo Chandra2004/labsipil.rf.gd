@@ -26,7 +26,7 @@
     use ITATS\PraktikumTeknikSipil\Http\Controllers\News\NewsController;
     use ITATS\PraktikumTeknikSipil\Http\Controllers\Dashboard\DashboardController;
 
-    SessionManager::startSecureSession();
+    // SessionManager::startSecureSession();
     Config::loadEnv();
     
     header('X-Powered-By: Native-Chandra');
@@ -52,18 +52,64 @@
     Router::add('GET', '/register', RegisterController::class, 'index', [WAFMiddleware::class]);
     Router::add('POST', '/register/auth', RegisterController::class, 'registerUser', [WAFMiddleware::class, CsrfMiddleware::class, RegisterValidator::class]);
 
-    Router::add('GET', '/dashboard/superadmin', DashboardController::class, 'superAdminDashboard', [
-        AuthMiddleware::class,
-        WAFMiddleware::class,
-        [RoleMiddleware::class, ['SuperAdmin']]
-    ]);
 
+    
     Router::add('GET', '/dashboard/praktikan', DashboardController::class, 'praktikanDashboard', [
         AuthMiddleware::class,
         WAFMiddleware::class,
         [RoleMiddleware::class, ['Praktikan']]
     ]);
     
+
+
+
+
+
+
+
+
+
+
+    // SUPER ADMIN
+    Router::add('GET', '/dashboard/superadmin', DashboardController::class, 'superAdminDashboard', [
+        AuthMiddleware::class,
+        WAFMiddleware::class,
+        [RoleMiddleware::class, ['SuperAdmin']]
+    ]);
+
+    Router::add('GET', '/dashboard/superadmin/user-management', DashboardController::class, 'superAdminDashboardUserManagement', [
+        AuthMiddleware::class,
+        WAFMiddleware::class,
+        [RoleMiddleware::class, ['SuperAdmin']]
+    ]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     Router::add('GET', '/logout', LoginController::class, 'logout', [WAFMiddleware::class]);
 
     BladeInit::init();

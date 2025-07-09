@@ -1,18 +1,18 @@
-@extends('homepage.layout.layoutHome')
 
-@section('content')
-@include('notification.notification')
+
+<?php $__env->startSection('content'); ?>
+<?php echo $__env->make('notification.notification', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <main class="flex-1">
     <section class="hero-section relative py-16 sm:py-24 md:py-32 flex items-center">
         <div class="slideshow-container">
             <div class="slideshow-image active"
-                style="background-image: url('{{ url("assets/images/internal/background-1.png") }}')">
+                style="background-image: url('<?php echo e(url("assets/images/internal/background-1.png")); ?>')">
             </div>
             <div class="slideshow-image"
-                style="background-image: url('{{ url("assets/images/internal/background-2.png") }}')">
+                style="background-image: url('<?php echo e(url("assets/images/internal/background-2.png")); ?>')">
             </div>
             <div class="slideshow-image"
-                style="background-image: url('{{ url("assets/images/internal/background-3.png") }}')">
+                style="background-image: url('<?php echo e(url("assets/images/internal/background-3.png")); ?>')">
             </div>
         </div>
         <div class="absolute inset-0 bg-black/50"></div>
@@ -28,7 +28,7 @@
                 Welcome to Lab Sipil ITATS, keep chilling and always Looksmaxxing
             </p>
             <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
-                <a href="{{ $link }}"
+                <a href="<?php echo e($link); ?>"
                     class="bg-primary text-white hover:bg-primary/90 px-6 py-3 rounded-lg text-lg font-medium transition-colors shadow-soft"
                     aria-label="Masuk ke dashboard">Masuk ke Dashboard</a>
                 <a href="/register"
@@ -49,21 +49,21 @@
         </div>
 
         <div class="mt-4 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            @foreach ($news as $item)
+            <?php $__currentLoopData = $news; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <article class="flex flex-col overflow-hidden bg-white border border-[#468B97]/50 rounded-xl shadow-soft transition-transform hover:scale-[1.02] hover:shadow-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between text-sm text-gray-600">
                         <span
-                            class="bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full text-xs font-medium">{{ $item['category'] }}</span>
-                        <time datetime="2025-10-01">{{ $item['date'] }}</time>
+                            class="bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full text-xs font-medium"><?php echo e($item['category']); ?></span>
+                        <time datetime="2025-10-01"><?php echo e($item['date']); ?></time>
                     </div>
-                    <h3 class="font-headline text-xl pt-3 font-semibold">{{ $item['title'] }}</h3>
+                    <h3 class="font-headline text-xl pt-3 font-semibold"><?php echo e($item['title']); ?></h3>
                 </div>
                 <div class="px-6 pb-6 flex-1">
-                    <p class="text-gray-600">{{ $item['excerpt'] }}</p>
+                    <p class="text-gray-600"><?php echo e($item['excerpt']); ?></p>
                 </div>
                 <div class="px-6 pb-6">
-                    <a href="/news/{{ $item['category'] }}/{{ $item['id'] }}/{{ $item['slug'] }}"
+                    <a href="/news/<?php echo e($item['category']); ?>/<?php echo e($item['id']); ?>/<?php echo e($item['slug']); ?>"
                         class="text-primary hover:underline flex items-center text-sm font-medium transition-colors"
                         aria-label="Baca selengkapnya tentang Pendaftaran Jurnal Praktikum">
                         Baca Selengkapnya
@@ -76,7 +76,7 @@
                     </a>
                 </div>
             </article>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
 
         <div class="mt-10 text-center">
@@ -204,4 +204,5 @@
         </div>
     </section>
 </main>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('homepage.layout.layoutHome', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\resources\Views/homepage/home.blade.php ENDPATH**/ ?>

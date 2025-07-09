@@ -1,6 +1,6 @@
-@extends('dashboard.layouts.layout')
 
-@section('dashboard-content')
+
+<?php $__env->startSection('dashboard-content'); ?>
 <main class="p-4 sm:p-6">
     <!-- Page Header -->
     <div class="mb-6">
@@ -67,4 +67,5 @@
         </div>
     </div>
 </main>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('dashboard.layouts.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\resources\Views/dashboard/superadmin/home.blade.php ENDPATH**/ ?>

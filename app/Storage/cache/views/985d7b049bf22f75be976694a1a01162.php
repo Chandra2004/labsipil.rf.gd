@@ -11,7 +11,7 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
         <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('/assets/css/custom.css')); ?>">
     </head>
     
     <body class="bg-[#E0E8E9] flex min-h-screen items-center justify-center p-4">
@@ -36,10 +36,10 @@
         </div>
         <div class="p-6">
             <div>
-                @include('notification.notification')
+                <?php echo $__env->make('notification.notification', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             </div>
             <form class="grid gap-4" action="/register/auth" method="POST">
-                @csrf
+                <?php echo '<input type="hidden" name="_token" value="' . $_SESSION['csrf_token'] . '">'; ?>
                 <div class="grid gap-2">
                     <label for="npm" class="text-sm font-medium">NPM (Nomor Pokok Mahasiswa)</label>
                     <input name="npm" id="npm" type="text" placeholder="06.2024.1.07780" required
@@ -85,3 +85,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\resources\Views/auth/register.blade.php ENDPATH**/ ?>

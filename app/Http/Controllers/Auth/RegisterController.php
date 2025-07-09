@@ -32,12 +32,18 @@ class RegisterController {
         $passwordMahasiswa = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
         $passwordConfirmMahasiswa = filter_input(INPUT_POST, 'password-confirm', FILTER_UNSAFE_RAW);
 
+        $words = explode(' ', $fullNameMahasiswa);
+        $initials = strtoupper(substr($words[0], 0, 1));
+        if (count($words) > 1) {
+            $initials .= strtoupper(substr($words[1], 0, 1));
+        }
+
         if ($passwordMahasiswa !== $passwordConfirmMahasiswa) {
             return Helper::redirect('/register', 'error', 'Passwords do not match.');
         }
 
         try {
-            $result = $this->authModel->registerUser($npmMahasiswa, $fullNameMahasiswa, $phoneMahasiswa, $emailMahasiswa, $passwordMahasiswa);
+            $result = $this->authModel->registerUser($npmMahasiswa, $fullNameMahasiswa, $phoneMahasiswa, $emailMahasiswa, $passwordMahasiswa, $initials);
 
             if ($result === 'email_exists') {
                 return Helper::redirect('/register', 'error', 'Email sudah terdaftar.');

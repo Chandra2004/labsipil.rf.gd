@@ -27,7 +27,7 @@ class RolesSeeder
     {
         $roles = [
             [
-                'uid' => Helper::generateUUID(10),
+                'uid' => 'SWjtFccjC7',
                 'role_name' => 'SuperAdmin',
                 'description_role' => 'Kepala Lab (Kalab) dengan akses penuh ke sistem',
             ],
@@ -42,7 +42,7 @@ class RolesSeeder
                 'description_role' => 'Asisten Lab (Aslab) yang mengatur jadwal & kelompok',
             ],
             [
-                'uid' => Helper::generateUUID(10),
+                'uid' => 'azJw5fNCEX',
                 'role_name' => 'Praktikan',
                 'description_role' => 'Peserta yang mengikuti praktikum',
             ],

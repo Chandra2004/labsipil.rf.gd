@@ -8,14 +8,14 @@
     <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2Ztz7uNKx5W4ZwFxFc00k6QjBgT_2y8A6w&s" type="image/x-icon">
     <title>{{ $title }}</title>
 
-    <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
 </head>
 
 <body class="bg-background min-h-screen flex flex-col font-body antialiased">
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-soft">
+    <header class="sticky top-0 z-50 bg-white">
         <div class="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href="/"
                 class="flex items-center gap-3 font-bold text-xl font-headline transition-colors hover:text-primary"
