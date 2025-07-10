@@ -55,10 +55,10 @@ class LoginController
             // echo "role : " . $user['role_name'];
             // Redirect berdasarkan role
             if ($user['role_name'] === 'SuperAdmin') {
-                return Helper::redirect('/dashboard/superadmin', 'success', 'Welcome, praktikan!');
+                return Helper::redirect('/dashboard/superadmin', 'success', 'Welcome, Super Admin!');
             }
             if ($user['role_name'] === 'Praktikan') {
-                return Helper::redirect('/dashboard/praktikan', 'success', 'Welcome, praktikan!');
+                return Helper::redirect('/dashboard/praktikan', 'success', 'Welcome, Praktikan!');
             }
 
         } catch (Exception $e) {

@@ -10,14 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 📦 Checkout kode dari repo
       - name: Checkout kode
         uses: actions/checkout@v4
 
+      # 🐘 Setup PHP untuk proyek (opsional jika pakai file PHP)
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
 
+      # 🟢 Setup Node.js agar bisa build Tailwind
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # bisa disesuaikan
+
+      # 🎨 Install TailwindCSS dan build output.css
+      - name: Build Tailwind CSS
+        run: |
+          npm install -D tailwindcss@3
+          npx tailwindcss init
+          echo '@tailwind base;\n@tailwind components;\n@tailwind utilities;' > resources/css/input.css
+          npx tailwindcss -i ./resources/css/input.css -o ./resources/css/output.css --minify
+
+      # 🚀 Sinkronisasi ke server InfinityFree via FTP
       - name: Sinkronisasi file ke InfinityFree
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:

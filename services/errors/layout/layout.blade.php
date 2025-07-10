@@ -13,7 +13,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
-<link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
 </head>
 
 <body class="bg-background min-h-screen flex flex-col font-body antialiased">
