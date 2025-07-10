@@ -30,8 +30,6 @@ jobs:
       - name: Build Tailwind CSS
         run: |
           npm install -D tailwindcss@3
-          npx tailwindcss init
-          echo '@tailwind base;\n@tailwind components;\n@tailwind utilities;' > resources/css/input.css
           npx tailwindcss -i ./resources/css/input.css -o ./resources/css/output.css --minify
 
       # 🚀 Sinkronisasi ke server InfinityFree via FTP
