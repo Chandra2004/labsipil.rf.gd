@@ -1,0 +1,65 @@
+includes:
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+parameters:
+  fileExtensions:
+    - php
+    - phpt
+  ignoreErrors:
+    -
+      # Why: Properties are read dynamically during message construction
+      message: '/Property Respect\\Validation\\Rules\\[a-zA-Z0-9\\_]+::\$[a-zA-Z0-9\\_]+ is never read, only written\./'
+
+    -
+      # Why: SimpleXMLElement is weird and doesn't implement anything ArrayAccess-like
+      message: '/Instanceof between mixed and SimpleXMLElement will always evaluate to false\./'
+      path: library/Rules/ArrayVal.php
+
+    -
+      # Why: This error is intentional, so PHPunit can test an invalid __callStatic call
+      message: '/Call to an undefined static method Respect\\Validation\\Validator::iDoNotExistSoIShouldThrowException/'
+      path: tests/unit/ValidatorTest.php
+
+    -
+      # Why: StaticValidator is a stub interface that types __callStatic
+      message: '/Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with Respect\\Validation\\Validator and Respect\\Validation\\ChainedValidator will always evaluate to false./'
+      path: tests/unit/ValidatorTest.php
+
+    -
+        # Why: I don't want to make changes to the code just to make phpstan happy
+        message: '/Parameter #2 \$values of function vsprintf expects array<bool\|float\|int\|string\|null>, array<string, array<bool\|int\|string>\|bool\|float\|int\|string> given./'
+        path: library/Rules/AbstractAge.php
+
+    # Why: Deprecations of version 3.0
+    - message: '/Using rule exceptions directly is deprecated, and will be removed in the next major version\./'
+
+    - message: '/This class is deprecated, and will be removed in the next major version\./'
+
+    -
+        message: '/Calling `.+\(\)` directly from rules is deprecated. Please use {@see \\Respect\\Validation\\Validator::.+\(\)} instead./'
+        path: tests/unit/Rules
+    -
+        message: '/Calling `.+\(\)` directly from rules is deprecated. Please use {@see \\Respect\\Validation\\Validator::.+\(\)} instead./'
+        path: tests/unit/FactoryTest.php
+    -
+        message: '/Calling `.+\(\)` directly from rules is deprecated. Please use {@see \\Respect\\Validation\\Validator::.+\(\)} instead./'
+        path: library/Validator.php
+    -
+        message: '/Calling validator as a function is deprecated, and will be removed in the next major version./'
+        path: tests/unit/Rules
+    -
+        message: '/Calling `reportError\(\)` directly is deprecated, and will be removed in the next major version./'
+        path: tests/unit/Rules
+    -
+        message: '/Calling `.+\(\)` directly from rules is deprecated. Please use {@see \\Respect\\Validation\\Validator::.+\(\)} instead./'
+        path: library/Rules
+    -
+        message: '/Calling `reportError\(\)` directly is deprecated, and will be removed in the next major version./'
+        path: library/Rules
+  level: 8
+  paths:
+    - library/
+    - tests/
+  excludePaths:
+    - tests/integration/
