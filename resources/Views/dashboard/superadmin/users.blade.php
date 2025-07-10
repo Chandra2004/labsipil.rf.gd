@@ -87,7 +87,6 @@
         </div>
     </div>
 </main>
-
 <!-- Add User Modal -->
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-md">
@@ -135,7 +134,6 @@
         </form>
     </div>
 </div>
-
 <!-- Edit User Modal -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-md">
@@ -178,7 +176,6 @@
         </form>
     </div>
 </div>
-
 <!-- Delete User Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-md">
@@ -193,7 +190,6 @@
         </div>
     </div>
 </div>
-
 <!-- Reset Password Modal -->
 <div id="resetPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-md">
