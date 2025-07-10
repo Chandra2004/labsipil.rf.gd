@@ -24,7 +24,8 @@
     use ITATS\PraktikumTeknikSipil\Http\Controllers\Auth\LoginController;
     use ITATS\PraktikumTeknikSipil\Http\Controllers\Homepage\HomeController;
     use ITATS\PraktikumTeknikSipil\Http\Controllers\News\NewsController;
-    use ITATS\PraktikumTeknikSipil\Http\Controllers\Dashboard\DashboardController;
+
+    use ITATS\PraktikumTeknikSipil\Http\Controllers\Dashboard\SuperAdminController;
 
     // SessionManager::startSecureSession();
     Config::loadEnv();
@@ -54,11 +55,11 @@
 
 
     
-    Router::add('GET', '/dashboard/praktikan', DashboardController::class, 'praktikanDashboard', [
-        AuthMiddleware::class,
-        WAFMiddleware::class,
-        [RoleMiddleware::class, ['Praktikan']]
-    ]);
+    // Router::add('GET', '/dashboard/praktikan', DashboardController::class, 'praktikanDashboard', [
+    //     AuthMiddleware::class,
+    //     WAFMiddleware::class,
+    //     [RoleMiddleware::class, ['Praktikan']]
+    // ]);
     
 
 
@@ -71,17 +72,17 @@
 
 
     // SUPER ADMIN
-    Router::add('GET', '/dashboard/superadmin', DashboardController::class, 'superAdminDashboard', [
+    Router::add('GET', '/dashboard/superadmin', SuperAdminController::class, 'index', [
         AuthMiddleware::class,
         WAFMiddleware::class,
         [RoleMiddleware::class, ['SuperAdmin']]
     ]);
 
-    Router::add('GET', '/dashboard/superadmin/user-management', DashboardController::class, 'superAdminDashboardUserManagement', [
-        AuthMiddleware::class,
-        WAFMiddleware::class,
-        [RoleMiddleware::class, ['SuperAdmin']]
-    ]);
+    // Router::add('GET', '/dashboard/superadmin/user-management', DashboardController::class, 'superAdminDashboardUserManagement', [
+    //     AuthMiddleware::class,
+    //     WAFMiddleware::class,
+    //     [RoleMiddleware::class, ['SuperAdmin']]
+    // ]);
 
 
 

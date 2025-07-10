@@ -6,19 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2Ztz7uNKx5W4ZwFxFc00k6QjBgT_2y8A6w&s" type="image/x-icon">
-  <title>{{ $title }}</title>
+  <title><?php echo e($title); ?></title>
 
   <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-  <!-- <script src="{{ url('/assets/js/tailwind-3.4.16.js') }}"></script> -->
+  <!-- <script src="<?php echo e(url('/assets/js/tailwind-3.4.16.js')); ?>"></script> -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
-  <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
+  <link rel="stylesheet" href="<?php echo e(url('/assets/css/output.css')); ?>">
+  <link rel="stylesheet" href="<?php echo e(url('/assets/css/custom.css')); ?>">
 </head>
 
 <body class="min-h-screen">
   <div>
-    @include('notification.notification')
+    <?php echo $__env->make('notification.notification', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
   </div>
   <div class="flex">
     <!-- Sidebar -->
@@ -42,12 +42,12 @@
               </a>
             </li>
             <li>
-              <a href="{{ $link }}" class="flex items-center py-3 px-5 text-gray-900 rounded-lg hover:bg-background">
+              <a href="<?php echo e($link); ?>" class="flex items-center py-3 px-5 text-gray-900 rounded-lg hover:bg-background">
                 <i data-lucide="layout-dashboard" class="w-5 h-5 text-gray-500"></i>
                 <span class="ml-3">Dashboard</span>
               </a>
             </li>
-            @if ($roleName == 'SuperAdmin')
+            <?php if($roleName == 'SuperAdmin'): ?>
             <li>
               <a href="/dashboard/superadmin/user-management" class="flex items-center py-3 px-5 text-gray-900 rounded-lg hover:bg-background">
                 <i data-lucide="users" class="w-5 h-5 text-gray-500"></i>
@@ -72,7 +72,7 @@
                 <span class="ml-3">Jadwal</span>
               </a>
             </li>
-            @endif
+            <?php endif; ?>
           </ul>
         </div>
       </div>
@@ -86,19 +86,19 @@
         </button>
         <div class="w-full flex justify-end px-4 sm:px-6">
           <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full">
-            <span class="font-medium text-gray-600 cursor-pointer" id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start">{{ $initials }}</span>
+            <span class="font-medium text-gray-600 cursor-pointer" id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start"><?php echo e($initials); ?></span>
           </div>
           <div id="userDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-auto">
             <div class="px-4 py-3 text-sm text-gray-900">
-              <div>{{ $fullName }}</div>
-              <div class="font-medium truncate">{{ $email }}</div>
+              <div><?php echo e($fullName); ?></div>
+              <div class="font-medium truncate"><?php echo e($email); ?></div>
             </div>
             <ul class="p-2 text-sm text-gray-700" aria-labelledby="avatarButton">
               <li>
-                <a href="{{ $link }}" class="block px-4 py-2 hover:bg-background rounded-md">Dashboard</a>
+                <a href="<?php echo e($link); ?>" class="block px-4 py-2 hover:bg-background rounded-md">Dashboard</a>
               </li>
               <li>
-                <a href="{{ $link }}/profile" class="block px-4 py-2 hover:bg-background rounded-md">Profile</a>
+                <a href="<?php echo e($link); ?>/profile" class="block px-4 py-2 hover:bg-background rounded-md">Profile</a>
               </li>
             </ul>
             <div class="p-2">
@@ -109,7 +109,7 @@
       </header>
 
       <!-- Main -->
-      @yield('dashboard-content')
+      <?php echo $__env->yieldContent('dashboard-content'); ?>
 
     </div>
   </div>
@@ -120,4 +120,4 @@
   <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 </body>
 
-</html>
+</html><?php /**PATH C:\laragon\www\resources\Views/dashboard/layouts/layout.blade.php ENDPATH**/ ?>
