@@ -14,26 +14,32 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v4
 
-      # 🐘 Setup PHP untuk proyek (opsional jika pakai file PHP)
+      # 🐘 Setup PHP (jika pakai PHP di server)
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
 
-      # 🟢 Setup Node.js agar bisa build Tailwind
+      # 🟢 Install Node.js
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # bisa disesuaikan
+          node-version: '18'
+
+      # 📁 Buat folder dan input.css secara manual
+      - name: Buat file input Tailwind jika belum ada
+        run: |
+          mkdir -p resources/css
+          echo '@tailwind base;\n@tailwind components;\n@tailwind utilities;' > resources/css/input.css
 
       # 🎨 Install TailwindCSS dan build output.css
-      - name: Build Tailwind CSS
+      - name: Install TailwindCSS dan Build CSS
         run: |
           npm install -D tailwindcss@3
-          npx tailwindcss -i ./resources/css/input.css -o ./resources/css/output.css --minify
+          npx tailwindcss -i resources/css/input.css -o resources/css/output.css --minify
 
-      # 🚀 Sinkronisasi ke server InfinityFree via FTP
-      - name: Sinkronisasi file ke InfinityFree
+      # 🚀 Upload ke InfinityFree via FTP
+      - name: Deploy ke InfinityFree
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
