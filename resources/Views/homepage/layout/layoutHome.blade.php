@@ -8,19 +8,26 @@
     <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2Ztz7uNKx5W4ZwFxFc00k6QjBgT_2y8A6w&s" type="image/x-icon">
     <title>{{ $title }}</title>
 
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <script src="{{ url('/assets/js/tailwind-3.4.16.js') }}"></script> -->
+    <!-- Open Graph for Social Media Sharing -->
+    <meta property="og:title" content="{{ $title }}">
+    <meta property="og:description" content="{{ $description ?? 'Deskripsi halaman untuk berbagi sosial.' }}">
+    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2Ztz7uNKx5W4ZwFxFc00k6QjBgT_2y8A6w&s">
+    <meta property="og:url" content="{{ $link }}">
+    <meta property="og:type" content="website">
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
 </head>
 
-<body class="bg-background min-h-screen flex flex-col font-body antialiased">
+<body class="bg-[#E0E8E9] min-h-screen flex flex-col font-body antialiased">
     <header class="sticky top-0 z-50 bg-white">
         <div class="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href="/"
-                class="flex items-center gap-3 font-bold text-xl font-headline transition-colors hover:text-primary"
+                class="flex items-center gap-3 font-bold text-xl font-headline transition-colors hover:text-[#468B97]"
                 aria-label="Beranda Civil Praktikum">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                     stroke="#468B97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -35,14 +42,14 @@
             <nav class="flex items-center gap-4">
                 @if ($userRole == null)
                 <a href="/login"
-                    class="text-sm font-medium text-gray-700 hover:text-primary px-4 py-2 rounded-md transition-colors"
+                    class="text-sm font-medium text-gray-700 hover:text-[#468B97] px-4 py-2 rounded-md transition-colors"
                     aria-label="Masuk ke akun">Login</a>
                 <a href="/register"
-                    class="text-sm font-medium bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md transition-colors"
+                    class="text-sm font-medium bg-[#468B97] text-white hover:bg-[#468B97]/90 px-4 py-2 rounded-md transition-colors"
                     aria-label="Daftar akun baru">Register</a>
                 @else
                 <a href="/logout"
-                    class="text-sm font-medium bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md transition-colors"
+                    class="text-sm font-medium bg-[#468B97] text-white hover:bg-[#468B97]/90 px-4 py-2 rounded-md transition-colors"
                     aria-label="Daftar akun baru">Logout</a>
                 @endif
             </nav>
@@ -68,12 +75,12 @@
                     // Remove active class from all buttons
                     tabButtons.forEach(btn => {
                         btn.classList.remove('active');
-                        btn.classList.remove('bg-primary', 'text-white');
+                        btn.classList.remove('bg-[#468B97]', 'text-white');
                         btn.classList.add('bg-gray-100', 'text-gray-700');
                     });
 
                     // Add active class to clicked button
-                    button.classList.add('active', 'bg-primary', 'text-white');
+                    button.classList.add('active', 'bg-[#468B97]', 'text-white');
                     button.classList.remove('bg-gray-100', 'text-gray-700');
 
                     // Hide all tab contents

@@ -7,9 +7,8 @@ use ITATS\PraktikumTeknikSipil\Helpers\Helper;
 use Illuminate\Support\Collection;
 use Exception;
 
-class NewsController
-{
-    public $news = [
+class NewsController {
+    private $news = [
         ['id' => 1, 'category' => 'Pengumuman', 'date' => '2025-10-01', 'title' => 'Pendaftaran Jurnal Praktikum', 'excerpt' => 'Pendaftaran jurnal praktikum untuk semester ini telah dibuka. Pastikan submit sebelum deadline!', 'slug' => 'pendaftaran-jurnal-praktikum'],
         ['id' => 2, 'category' => 'Jadwal', 'date' => '2025-09-15', 'title' => 'Jadwal Praktikum Baru', 'excerpt' => 'Jadwal praktikum semester ganjil 2025/2026 telah dirilis. Cek sekarang!', 'slug' => 'jadwal-praktikum-baru'],
         ['id' => 3, 'category' => 'Berita', 'date' => '2025-08-30', 'title' => 'Pelatihan Asisten Baru', 'excerpt' => 'Pelatihan untuk asisten praktikum baru akan diadakan bulan depan. Daftar sekarang!', 'slug' => 'pelatihan-asisten-baru'],
@@ -111,7 +110,11 @@ class NewsController
         ['id' => 110, 'category' => 'Pengumuman', 'date' => '2024-03-15', 'title' => 'Pembaruan Peralatan Lab', 'excerpt' => 'Peralatan laboratorium baru telah tersedia untuk praktikum.', 'slug' => 'pembaruan-peralatan-lab'],
     ];
 
-    public function index($page = 1) {
+    public function __construct(){
+    }
+
+    // VIEW NEWS
+    public function Index($page = 1) {
         $news = $this->news;
 
         $notification = Helper::get_flash('notification');
@@ -142,7 +145,8 @@ class NewsController
         ]);
     }
 
-    public function detail($category, $id, $slug) {
+    // DETAIL NEWS
+    public function Detail($category, $id, $slug) {
         $news = $this->news;
 
         $item = null;

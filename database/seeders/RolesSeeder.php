@@ -32,12 +32,12 @@ class RolesSeeder
                 'description_role' => 'Kepala Lab (Kalab) dengan akses penuh ke sistem',
             ],
             [
-                'uid' => Helper::generateUUID(10),
+                'uid' => 'pY6FXnJj4P',
                 'role_name' => 'Pembimbing',
                 'description_role' => 'Dosen Pembimbing (Dospem) yang menilai praktikan',
             ],
             [
-                'uid' => Helper::generateUUID(10),
+                'uid' => 'QvnNeZJlxV',
                 'role_name' => 'Asisten',
                 'description_role' => 'Asisten Lab (Aslab) yang mengatur jadwal & kelompok',
             ],

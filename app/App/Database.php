@@ -54,6 +54,7 @@
          * @param string $sql
          */
         public function query($sql) {
+            error_log("[SQL] " . $sql); // Debug
             $this->stmt = $this->dbh->prepare($sql);
         }
 
@@ -64,6 +65,7 @@
          * @param int|null $type
          */
         public function bind($param, $value, $type = null) {
+            error_log("[BIND] $param = $value");
             if (is_null($type)) {
                 switch (true) {
                     case is_int($value):
@@ -87,12 +89,27 @@
          * @return bool
          */
         public function execute() {
+            // try {
+            //     return $this->stmt->execute();
+            // } catch (PDOException $e) {
+            //     // die("Query Execution Error: " . $e->getMessage());
+            //     error_log("Query Execution Error: " . $e->getMessage());
+            //     // throw new PDOException("Database operation failed" . $e->getMessage());
+            //     throw new PDOException("Database operation failed: " . $e->getMessage(), (int)$e->getCode(), $e);
+            // }
             try {
                 return $this->stmt->execute();
             } catch (PDOException $e) {
-                error_log("Query Execution Error: " . $e->getMessage());
-                throw new PDOException("Database operation failed");
+                $errorMessage = "Database operation failed:\n" .
+                                "Message: " . $e->getMessage() . "\n" .
+                                "SQL: " . $this->stmt->queryString . "\n" .
+                                "Bindings: " . json_encode($this->bindings ?? []) . "\n";
+            
+                error_log($errorMessage);
+            
+                throw new PDOException($errorMessage, (int)$e->getCode(), $e);
             }
+            
         }
 
         /**

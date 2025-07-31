@@ -1,5 +1,5 @@
 <div class="fixed top-0 right-0 z-50 flex flex-col items-end p-4 space-y-4">
-    @if (!empty($notification) && $notification['status'] === 'error')
+    @if (isset($notification['status']) && $notification['status'] === 'error')
     <div id="alert-2" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm opacity-0 transform translate-y-4 transition-all duration-300 ease-in-out" role="alert">
         <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg">
             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -19,7 +19,7 @@
     </div>
     @endif
 
-    @if (!empty($notification) && $notification['status'] === 'success')
+    @if (isset($notification['status']) && $notification['status'] === 'success')
     <div id="alert-3" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm opacity-0 transform translate-y-4 transition-all duration-300 ease-in-out" role="alert">
         <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -39,7 +39,7 @@
     </div>
     @endif
 
-    @if (!empty($notification) && $notification['status'] === 'warning')
+    @if (isset($notification['status']) && $notification['status'] === 'warning')
     <div id="alert-4" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm opacity-0 transform translate-y-4 transition-all duration-300 ease-in-out" role="alert">
         <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg">
             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

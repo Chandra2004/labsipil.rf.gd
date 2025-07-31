@@ -8,15 +8,15 @@
     <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2Ztz7uNKx5W4ZwFxFc00k6QjBgT_2y8A6w&s" type="image/x-icon">
     <title>Civil Praktikum</title>
 
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <script src="{{ url('/assets/js/tailwind-3.4.16.js') }}"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
+    
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url('/assets/css/output.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/custom.css') }}">
 </head>
 
 <body class="bg-background min-h-screen flex flex-col font-body antialiased">
+
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-soft">
         <div class="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href="/"
@@ -45,7 +45,7 @@
                     aria-label="Daftar akun baru">Register</a>
                 @else
                 <a href="/logout"
-                    class="text-sm font-medium bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md transition-colors"
+                    class="text-sm font-medium bg-[#468B97] text-white hover:bg-[#468B97]/90 px-4 py-2 rounded-md transition-colors"
                     aria-label="Daftar akun baru">Logout</a>
                 @endif
             </nav>

@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
+.turbo-progress-bar {
+    background-color: #468B97 !important; /* Tailwind pink-500 */
+    height: 3px !important;
+}
+
+button[aria-expanded="false"] {
+    background-color: white !important;
+    color: #374151 !important; /* Tailwind gray-700 */
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: #E0E8E9;
@@ -9,57 +19,47 @@ body {
     font-family: 'Space Grotesk', sans-serif;
 }
 
-/* TEXT */
-.text-primary {
-    color: #468B97;
+/* ROLE */
+.badge-SuperAdmin {
+    color: #ffffff;
+    background-color: #dc2626;
 }
 
-.text-bg {
-    color: #E0E8E9;
-}
-
-.text-accent {
-    color: #FEE500;
-}
-
-/* BACKGROUND */
-.bg-primary {
+.badge-Pembimbing {
+    color: #ffffff;
     background-color: #468B97;
 }
 
-.bg-background {
-    background-color: #E0E8E9;
+.badge-Asisten {
+    color: #ffffff;
+    background-color: #16a34a;
 }
 
-.bg-accent {
-    background-color: #FEE500;
+.badge-Praktikan {
+    color: #ffffff;
+    background-color: #f97316;
 }
 
-/* HOVER TEXT */
-.hover\:text-primary:hover {
-    color: #468B97;
+/* STATUS */
+.badge-Disetujui {
+    color: #ffffff;
+    background-color: #16a34a;
+    border: 2px solid #15803d;
 }
 
-.hover\:text-bg:hover {
-    color: #E0E8E9;
+.badge-Diproses {
+    color: #ffffff;
+    background-color: #f59e0b;
+    border: 2px solid #d97706;
 }
 
-.hover\:text-accent:hover {
-    color: #FEE500;
+.badge-Ditolak {
+    color: #ffffff;
+    background-color: #dc2626;
+    border: 2px solid #b91c1c;
 }
 
-/* HOVER BACKGROUND */
-.hover\:bg-primary:hover {
-    background-color: #468B97;
-}
-
-.hover\:bg-background:hover {
-    background-color: #E0E8E9;
-}
-
-.hover\:bg-accent:hover {
-    background-color: #FEE500;
-}
+/* CALENDAR */
 
 
 
@@ -68,37 +68,16 @@ body {
 
 
 
-.border-primary {
-    border-color: #468B97;
-}
 
-.tab-button {
-    transition: all 0.3s ease;
-}
 
-.tab-button.active {
-    background-color: #468B97;
-    color: white;
-}
 
-.tab-content {
-    display: none;
-}
 
-.tab-content.active {
-    display: block;
-    animation: fadeIn 0.5s;
-}
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
 
-    to {
-        opacity: 1;
-    }
-}
+
+
+
+
 
 .hero-section {
     position: relative;

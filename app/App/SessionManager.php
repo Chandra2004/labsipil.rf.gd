@@ -2,6 +2,7 @@
     namespace ITATS\PraktikumTeknikSipil\App;
 
     use ITATS\PraktikumTeknikSipil\App\Config;
+use ITATS\PraktikumTeknikSipil\Helpers\Helper;
 
     class SessionManager {
         public static function startSecureSession() {
@@ -26,16 +27,14 @@
                     $_SESSION['user_agent'] = $userAgent;
                 } elseif ($_SESSION['user_agent'] !== $userAgent) {
                     self::destroySession();
-                    header('Location: ' . Config::get('BASE_URL') . '/login?error=invalid_session');
-                    exit;
+                    Helper::redirect('/login', 'error', 'Sesi telah habis. Silakan login kembali.');
                 }
 
             
                 $timeout = 30 * 60;
                 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
                     self::destroySession();
-                    header('Location: ' . Config::get('BASE_URL') . '/login?error=session_expired');
-                    exit;
+                    Helper::redirect('/login', 'error', 'Sesi telah habis. Silakan login kembali.');
                 }
                 $_SESSION['last_activity'] = time();
             }

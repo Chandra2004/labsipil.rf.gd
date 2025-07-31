@@ -18,10 +18,10 @@
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <span
-                class="inline-block mb-6 text-sm font-medium border border-white text-white rounded-full px-4 py-1.5 bg-primary/5">Selamat
+                class="inline-block mb-6 text-sm font-medium border border-white text-white rounded-full px-4 py-1.5 bg-[#468B97]">Selamat
                 Datang di Portal Informasi Praktikum</span>
             <h1
-                class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight max-w-4xl mx-auto text-white">
+                class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-9xlxl font-bold tracking-tight max-w-4xl mx-auto text-white">
                 Laboratorium Teknik Sipil ITATS
             </h1>
             <p class="mt-6 max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-gray-200 leading-relaxed">
@@ -29,10 +29,10 @@
             </p>
             <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
                 <a href="{{ $link }}"
-                    class="bg-primary text-white hover:bg-primary/90 px-6 py-3 rounded-lg text-lg font-medium transition-colors shadow-soft"
+                    class="bg-[#468B97] text-white hover:bg-[#468B97]/90 px-6 py-3 rounded-lg text-lg font-medium transition-colors shadow-soft"
                     aria-label="Masuk ke dashboard">Masuk ke Dashboard</a>
                 <a href="/register"
-                    class="border border-white text-white hover:bg-primary px-6 py-3 rounded-lg text-lg font-medium transition-colors"
+                    class="border border-white text-white hover:bg-[#468B97] px-6 py-3 rounded-lg text-lg font-medium transition-colors"
                     aria-label="Daftar akun baru">Daftar Akun Baru</a>
             </div>
         </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="px-6 pb-6">
                     <a href="/news/{{ $item['category'] }}/{{ $item['id'] }}/{{ $item['slug'] }}"
-                        class="text-primary hover:underline flex items-center text-sm font-medium transition-colors"
+                        class="text-[#468B97] hover:underline flex items-center text-sm font-medium transition-colors"
                         aria-label="Baca selengkapnya tentang Pendaftaran Jurnal Praktikum">
                         Baca Selengkapnya
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -80,7 +80,7 @@
         </div>
 
         <div class="mt-10 text-center">
-            <a href="/news" class="inline-flex items-center text-primary font-medium hover:underline">
+            <a href="/news" class="inline-flex items-center text-[#468B97] font-medium hover:underline">
                 Lihat Semua Berita
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="#468B97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
@@ -104,7 +104,7 @@
         <div class="max-w-4xl mx-auto">
             <!-- Tab Navigation -->
             <div class="flex flex-wrap gap-2 mb-8 justify-center">
-                <button class="tab-button active px-4 py-2 rounded-lg font-medium bg-primary text-white"
+                <button class="tab-button active px-4 py-2 rounded-lg font-medium bg-[#468B97] text-white"
                     data-tab="tab-1">Ilmu Ukur Tanah</button>
                 <button class="tab-button px-4 py-2 rounded-lg font-medium bg-gray-100 text-gray-700"
                     data-tab="tab-2">Teknologi Beton</button>

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'itats/praktikum-teknik-sipil',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => '64b93f89b9b80f598ea6f35ed1d8dd4c7ddd289d',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
+        'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -155,9 +155,9 @@
             'dev_requirement' => false,
         ),
         'itats/praktikum-teknik-sipil' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '64b93f89b9b80f598ea6f35ed1d8dd4c7ddd289d',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
+            'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -274,7 +274,7 @@
         'roave/security-advisories' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'c4ed86478b4c2004245ec9d3a470dbe1790586a3',
+            'reference' => '56a0a5fbffe6faa8e85eb4d027a3eaf704adc288',
             'type' => 'metapackage',
             'install_path' => null,
             'aliases' => array(),

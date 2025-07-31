@@ -31,4 +31,19 @@ class SuperAdminController
             'roleName' => $_SESSION['user']['role_name']
         ]);
     }
+
+    public function userManagement()
+    {
+        $notification = Helper::get_flash('notification');
+        View::render('dashboard.superadmin.users', [
+            'title' => 'Dashboard Home | Praktikum Teknik Sipil ITATS',
+            'notification' => $notification,
+            'link' => $this->linkDashboard,
+
+            'fullName' => $_SESSION['user']['full_name'],
+            'email' => $_SESSION['user']['email'],
+            'initials' => $_SESSION['user']['initials'],
+            'roleName' => $_SESSION['user']['role_name']
+        ]);
+    }
 }

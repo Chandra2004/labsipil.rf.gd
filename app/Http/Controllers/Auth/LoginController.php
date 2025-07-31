@@ -5,24 +5,26 @@ namespace ITATS\PraktikumTeknikSipil\Http\Controllers\Auth;
 use ITATS\PraktikumTeknikSipil\App\{Config, Database, View, CacheManager};
 use ITATS\PraktikumTeknikSipil\Helpers\Helper;
 use Exception;
-use ITATS\PraktikumTeknikSipil\Models\AuthModel;
+use ITATS\PraktikumTeknikSipil\Models\Auth\LoginModel;
 
-class LoginController
-{
-        private $authModel;
+class LoginController {
+    private $LoginModel;
 
     public function __construct() {
-        $this->authModel = new AuthModel();
+        $this->LoginModel = new LoginModel();
     }
-    public function index() {
+
+    // LOGIN VIEW
+    public function Index() {
         $notification = Helper::get_flash('notification');
-        View::render('auth.login',[
+        View::render('auth.login', [
             'notification' => $notification
         ]);
     }
 
-    public function loginUser() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['loginUser'])) {
+    // LOGIN USER
+    public function LoginUser() {
+        if (!Helper::is_post() || !isset($_POST['_token'])) {
             return Helper::redirect('/login', 'error', 'Invalid request method.');
         }
 
@@ -34,39 +36,53 @@ class LoginController
         }
 
         try {
-            $user = $this->authModel->loginUser($identyfier, $password);
-            if (!$user) {
-                return Helper::redirect('/login', 'error', 'Invalid email or password.');
+            $user = $this->LoginModel->LoginUser($identyfier, $password);
+
+            $errorMessages = [
+                'status_failed' => 'Status akun anda tidak aktif',
+                false => 'Password anda salah',
+            ];
+
+            if (!is_array($user) && isset($errorMessages[$user])) {
+                $msg = $errorMessages[$user];
+                return Helper::redirect('/login', 'error', $msg);
             }
 
             // Simpan session user
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'uid' => $user['uid'],
+
+                'profile_picture' => $user['profile_picture'],
                 'full_name' => $user['full_name'],
+                'phone' => $user['phone'],
+                'fakultas' => $user['fakultas'],
+                'prodi' => $user['prodi'],
+                'semester' => $user['semester'],
+                'gender' => $user['gender'],
                 'email' => $user['email'],
+                'npm_nip' => $user['npm_nip'],
+                'posisi' => $user['posisi'],
+
                 'initials' => $user['initials'],
                 'role_name' => $user['role_name'],
             ];
 
-            // Update last activity & generate token
             $_SESSION['auth_token'] = hash('sha256', $_SESSION['user']['id'] . Config::get('APP_KEY'));
 
-            // echo "role : " . $user['role_name'];
-            // Redirect berdasarkan role
             if ($user['role_name'] === 'SuperAdmin') {
-                return Helper::redirect('/dashboard/superadmin', 'success', 'Welcome, Super Admin!');
+                return Helper::redirect('/dashboard/superadmin', 'success', 'Welcome, ' . $_SESSION['user']['full_name'] . '!');
             }
             if ($user['role_name'] === 'Praktikan') {
-                return Helper::redirect('/dashboard/praktikan', 'success', 'Welcome, Praktikan!');
+                return Helper::redirect('/dashboard/praktikan', 'success', 'Welcome, ' . $_SESSION['user']['full_name'] . '!');
             }
-
         } catch (Exception $e) {
             return Helper::redirect('/login', 'error', 'Login failed: ' . $e->getMessage());
         }
     }
 
-    public function logout() {
+    // LOGOUT USER
+    public function Logout() {
         session_destroy();
         return Helper::redirect('/', 'success', 'Logged out successfully.');
     }
