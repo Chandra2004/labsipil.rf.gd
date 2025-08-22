@@ -44,9 +44,9 @@ class $className extends Controller {
     public function Index() {
         \$notification = Helper::get_flash('notification');
         
-        return View::render('auth.login', [
+        return View::render('your.view', [
             'notification' => \$notification,
-            'title' => 'Login - My Restoran'
+            'title' => 'Your title'
         ]);
     }
 }
