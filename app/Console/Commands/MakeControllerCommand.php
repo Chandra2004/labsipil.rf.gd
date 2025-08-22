@@ -42,7 +42,7 @@ use TheFramework\Helpers\Helper;
 
 class $className extends Controller
 {
-    public function index()
+    public function Index()
     {
         // Logika Anda di sini
     }
