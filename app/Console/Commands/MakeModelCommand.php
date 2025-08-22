@@ -40,9 +40,13 @@ class MakeModelCommand implements CommandInterface {
         use Exception;
         use TheFramework\Helpers\Helper;
 
-        class $className extends Database {
+        class $className {
             private \$db;
 
+            public function __construct() {
+                $this->db = Database::getInstance();
+            }
+            
             public function GetUserData() {
                 \$this->db->query("
                     SELECT * FROM users
