@@ -26,7 +26,32 @@ class MakeModelCommand implements CommandInterface {
         }
 
         $namespace = "TheFramework\\Models" . ($subNamespace ? "\\$subNamespace" : '');
-        $content = "<?php\n\nnamespace $namespace;\n\nclass $className {\n    //\n}\n";
+        $content = <<<PHP
+        <?php
+
+        namespace $namespace;
+
+        use TheFramework\App\CacheManager;
+        use TheFramework\App\Database;
+        use TheFramework\App\Config;
+        use TheFramework\App\Logging;
+        use Defuse\Crypto\Crypto;
+        use Defuse\Crypto\Key;
+        use Exception;
+        use TheFramework\Helpers\Helper;
+
+        class $className extends Database {
+            private \$db;
+
+            public function GetUserData() {
+                \$this->db->query("
+                    SELECT * FROM users
+                ");
+                return \$this->db->resultSet();
+            }
+        }
+        PHP;
+
         if (!is_dir(dirname($path))) mkdir(dirname($path), 0755, true);
         file_put_contents($path, $content);
         echo "\033[38;5;28m★ SUCCESS  Model dibuat: $className (app/Models/" . ($folderPath ? $folderPath . '/' : '') . "$className.php)\033[0m\n";
