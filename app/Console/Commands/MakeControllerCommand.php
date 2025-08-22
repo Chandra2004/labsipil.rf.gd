@@ -40,11 +40,14 @@ use Exception;
 use TheFramework\App\View;
 use TheFramework\Helpers\Helper;
 
-class $className extends Controller
-{
-    public function Index()
-    {
-        // Logika Anda di sini
+class $className extends Controller {
+    public function Index() {
+        \$notification = Helper::get_flash('notification');
+        
+        return View::render('auth.login', [
+            'notification' => \$notification,
+            'title' => 'Login - My Restoran'
+        ]);
     }
 }
 PHP;
