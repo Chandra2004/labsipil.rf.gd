@@ -2,6 +2,8 @@
 
 namespace TheFramework\Middleware;
 
+use TheFramework\App\Config;
+use TheFramework\Helpers\Helper;
 use TheFramework\Http\Controllers\Services\ErrorController;
 
 class CsrfMiddleware implements Middleware
@@ -25,26 +27,33 @@ class CsrfMiddleware implements Middleware
 
         $sessionToken = $_SESSION['csrf_token'] ?? '';
 
-        error_log("SESSION CSRF: " . $sessionToken);
-        error_log("POST CSRF   : " . ($token ?: 'TIDAK ADA'));
+        // error_log("SESSION CSRF: " . $sessionToken);
+        // error_log("POST CSRF   : " . ($token ?: 'TIDAK ADA'));
 
         return !empty($sessionToken) && !empty($token) && hash_equals($sessionToken, $token);
     }
 
-    public function before()
-    {
-        // if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        //     if (session_status() !== PHP_SESSION_ACTIVE) {
-        //         session_start();
-        //     }
+    public function before() {
+        Config::loadEnv();
 
-        //     $token = $_POST['_token'] ?? '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
 
-        //     if (!self::verifyToken($token)) {
-        //         ErrorController::error403();
-        //         exit;
-        //         // echo json_encode(["error" => "Invalid CSRF token."]);
-        //     }
-        // }
+            $token = $_POST['_token'] ?? '';
+
+            if (!self::verifyToken($token)) {
+                if (Config::get('APP_ENV') === 'production') {
+                    ErrorController::error403();
+                    exit;
+                } elseif (Config::get('APP_ENV') === 'local') {
+                    return Helper::json([
+                        'status' => 'failed',
+                        'message' => 'CSRF token tidak valid'
+                    ]);
+                }
+            }
+        }
     }
 }
