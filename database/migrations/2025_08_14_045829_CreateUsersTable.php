@@ -11,9 +11,9 @@ class Migration_2025_08_14_045829_CreateUsersTable {
             $table->id();
             $table->string('uid')->unique();
 
-            $table->text('name', 100);
-            $table->text('email')->unique();
-            $table->text('password');
+            $table->string('name');
+            $table->string('email');
+            $table->string('password');
             $table->string('profile_picture')->nullable();
             $table->boolean('is_active')->default(1);
             
