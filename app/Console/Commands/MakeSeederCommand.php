@@ -66,6 +66,7 @@ use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Key;
 use Faker\Factory;
 use TheFramework\Database\Seeder;
+use TheFramework\Helpers\Helper;
 
 class $name  {
 
