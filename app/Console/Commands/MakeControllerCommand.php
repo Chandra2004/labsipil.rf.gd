@@ -36,6 +36,10 @@ class MakeControllerCommand implements CommandInterface {
 
 namespace $namespace;
 
+use Exception;
+use TheFramework\App\View;
+use TheFramework\Helpers\Helper;
+
 class $className extends Controller
 {
     public function index()
