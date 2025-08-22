@@ -49,7 +49,9 @@
 
             } catch (PDOException $e) {
                 error_log("Database Connection Error: " . $e->getMessage());
-                throw new PDOException("Database connection failed. Check error logs for details.");
+                throw new PDOException(
+                    "Database connection failed. Check error logs for details." . $e->getMessage()
+                );
             }
         }
 
