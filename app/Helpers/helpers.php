@@ -32,8 +32,14 @@
     }
 
     if (!function_exists('generateUUID')) {
-        function generateUUID() {
-            return Helper::generateUUID();
+        function generateUUID(int $length = 36) {
+            return Helper::generateUUID($length);
+        }
+    }
+
+    if (!function_exists('rupiah')) {
+        function rupiah($number) {
+            return Helper::rupiah($number);
         }
     }
     
