@@ -1,11 +1,10 @@
 <?php
 namespace TheFramework\Console\Commands;
 
-use PDO;
+use Throwable;
 use TheFramework\Console\CommandInterface;
 use TheFramework\App\Database;
 use TheFramework\App\Schema;
-use Throwable;
 
 class RollbackCommand implements CommandInterface
 {
@@ -31,7 +30,7 @@ class RollbackCommand implements CommandInterface
         $confirmation = trim(fgets($handle));
         fclose($handle);
 
-        if ($confirmation !== 'yes' && $confirmation !== 'YES' && $confirmation !== 'y' && $confirmation !== 'Y') {
+        if (!in_array(strtolower($confirmation), ['yes','y'], true)) {
             $this->error("Rollback dibatalkan oleh pengguna.");
             return;
         }
@@ -51,25 +50,36 @@ class RollbackCommand implements CommandInterface
             return;
         }
 
-        foreach ($tables as $table) {
-            try {
-                $this->info("Menghapus tabel: {$table}...");
-                Schema::dropIfExists($table);
-                $this->success("Tabel {$table} telah dihapus.");
-            } catch (Throwable $e) {
-                $this->error("Gagal menghapus tabel {$table}: " . $e->getMessage());
-                return;
-            }
-        }
+        try {
+            // Matikan pemeriksaan foreign key agar bisa drop semua tabel
+            $db->query("SET FOREIGN_KEY_CHECKS = 0");
 
-        $this->success("Semua tabel telah dihapus, rollback selesai.");
+            foreach ($tables as $table) {
+                try {
+                    $this->info("Menghapus tabel: {$table}...");
+                    Schema::dropIfExists($table);
+                    $this->success("Tabel {$table} telah dihapus.");
+                } catch (Throwable $e) {
+                    $this->error("Gagal menghapus tabel {$table}: " . $e->getMessage());
+                    // lanjut ke tabel berikutnya
+                }
+            }
+
+            // Aktifkan kembali pemeriksaan foreign key
+            $db->query("SET FOREIGN_KEY_CHECKS = 1");
+
+            $this->success("Semua tabel telah dihapus, rollback selesai.");
+
+        } catch (Throwable $e) {
+            $this->error("Terjadi kesalahan saat rollback: " . $e->getMessage());
+        }
     }
 
     /**
      * Ambil daftar semua tabel di database.
      */
-    private function getAllTables($db) {
-        // Jalankan query
+    private function getAllTables($db): array
+    {
         $db->query("SHOW TABLES");
         $tablesResult = $db->resultSet(); // ambil array hasil query
     
@@ -77,15 +87,15 @@ class RollbackCommand implements CommandInterface
             return [];
         }
     
-        // Ambil nama kolom pertama (karena SHOW TABLES kolomnya dinamis)
+        // Ambil nama kolom pertama (SHOW TABLES kolomnya dinamis)
         $tables = [];
         foreach ($tablesResult as $row) {
             $tables[] = reset($row); // reset() ambil value pertama dari array
         }
     
-        // Filter tabel sistem kalau perlu
+        // Filter tabel sistem jika perlu
         return array_filter($tables, function ($table) {
-            return $table !== 'migrations';
+            return $table !== 'migrations'; // jangan hapus tabel migrasi kalau mau dicatat
         });
     }
     
