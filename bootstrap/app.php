@@ -1,4 +1,5 @@
 <?php
+
 use TheFramework\BladeInit;
 use TheFramework\App\Config;
 use TheFramework\App\Router;

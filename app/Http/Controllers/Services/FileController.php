@@ -4,17 +4,20 @@ namespace TheFramework\Http\Controllers\Services;
 
 use TheFramework\App\Config;
 
-class FileController {
+class FileController
+{
     private string $baseDir;
     private array $allowedFolders = ['dummy', 'public', 'user-pictures', 'css', 'js'];
     private array $allowedExtensions = ['ico', 'jpg', 'jpeg', 'png', 'webp', 'css', 'js', 'txt', 'html', 'htm'];
 
-    public function __construct() {
+    public function __construct()
+    {
         Config::loadEnv();
         $this->baseDir = realpath(ROOT_DIR . '/private-uploads') . DIRECTORY_SEPARATOR;
     }
 
-    public function Serve($params = []) {
+    public function Serve($params = [])
+    {
         $requested = '';
         if (is_array($params) && isset($params[0])) {
             $requested = $params[0];
@@ -28,29 +31,29 @@ class FileController {
         if (empty($requested)) {
             if (Config::get('APP_ENV') === 'local') {
                 $error = [
-                    'message' => 'Access denied: no file specified. check url : /file/(your allow folder)/(name of file.extension)', 
+                    'message' => 'Access denied: no file specified. check url : /file/(your allow folder)/(name of file.extension)',
                     'file' => '/private-uploads/',
                     'line' => '0'
                 ];
 
                 DebugController::showWarning($error);
-            } else if(Config::get('APP_ENV') === 'production') {
+            } else if (Config::get('APP_ENV') === 'production') {
                 ErrorController::error403();
             }
         }
-        
+
         // Validasi folder teratas
         $topFolder = strtok($requested, '/');
         if (!in_array($topFolder, $this->allowedFolders, true)) {
             if (Config::get('APP_ENV') === 'local') {
                 $error = [
-                    'message' => 'Access denied: invalid folder. check url : /file/(your allow folder)/(name of file.extension)', 
+                    'message' => 'Access denied: invalid folder. check url : /file/(your allow folder)/(name of file.extension)',
                     'file' => '/private-uploads/',
                     'line' => '0'
                 ];
 
                 DebugController::showWarning($error);
-            } else if(Config::get('APP_ENV') === 'production') {
+            } else if (Config::get('APP_ENV') === 'production') {
                 ErrorController::error403();
             }
         }
@@ -66,13 +69,13 @@ class FileController {
         if ($fullPath === false || strncmp($fullPath, $realBase, strlen($realBase)) !== 0) {
             if (Config::get('APP_ENV') === 'local') {
                 $error = [
-                    'message' => 'Access denied: path traversal or file not found. check url : /file/(your allow folder)/(name of file.extension)', 
+                    'message' => 'Access denied: path traversal or file not found. check url : /file/(your allow folder)/(name of file.extension)',
                     'file' => '/private-uploads/',
                     'line' => '0'
                 ];
 
                 DebugController::showWarning($error);
-            } else if(Config::get('APP_ENV') === 'production') {
+            } else if (Config::get('APP_ENV') === 'production') {
                 ErrorController::error403();
             }
         }
@@ -90,13 +93,13 @@ class FileController {
             if (!$fullPath) {
                 if (Config::get('APP_ENV') === 'local') {
                     $error = [
-                        'message' => 'File not found. check url : /file/(your allow folder)/(name of file.extension)', 
+                        'message' => 'File not found. check url : /file/(your allow folder)/(name of file.extension)',
                         'file' => '/private-uploads/',
                         'line' => '0'
                     ];
-    
+
                     DebugController::showWarning($error);
-                } else if(Config::get('APP_ENV') === 'production') {
+                } else if (Config::get('APP_ENV') === 'production') {
                     ErrorController::error404();
                 }
             }
@@ -109,22 +112,27 @@ class FileController {
 
         // Validasi MIME type
         $allowedMime = [
-            'image/jpeg', 'image/png', 'image/webp',
-            'image/x-icon', 'image/vnd.microsoft.icon',
-            'text/css', 'application/javascript', 'text/javascript',
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'image/x-icon',
+            'image/vnd.microsoft.icon',
+            'text/css',
+            'application/javascript',
+            'text/javascript',
             'text/plain',
             'text/html',
         ];
         if (!in_array($mime, $allowedMime, true)) {
             if (Config::get('APP_ENV') === 'local') {
                 $error = [
-                    'message' => 'Invalid file type. check url : /file/(your allow folder)/(name of file.extension)', 
+                    'message' => 'Invalid file type. check url : /file/(your allow folder)/(name of file.extension)',
                     'file' => '/private-uploads/',
                     'line' => '0'
                 ];
 
                 DebugController::showWarning($error);
-            } else if(Config::get('APP_ENV') === 'production') {
+            } else if (Config::get('APP_ENV') === 'production') {
                 ErrorController::error404();
             }
         }

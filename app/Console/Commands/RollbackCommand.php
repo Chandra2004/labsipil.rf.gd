@@ -1,4 +1,5 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use Throwable;
@@ -30,7 +31,7 @@ class RollbackCommand implements CommandInterface
         $confirmation = trim(fgets($handle));
         fclose($handle);
 
-        if (!in_array(strtolower($confirmation), ['yes','y'], true)) {
+        if (!in_array(strtolower($confirmation), ['yes', 'y'], true)) {
             $this->error("Rollback dibatalkan oleh pengguna.");
             return;
         }
@@ -69,7 +70,6 @@ class RollbackCommand implements CommandInterface
             $db->query("SET FOREIGN_KEY_CHECKS = 1");
 
             $this->success("Semua tabel telah dihapus, rollback selesai.");
-
         } catch (Throwable $e) {
             $this->error("Terjadi kesalahan saat rollback: " . $e->getMessage());
         }
@@ -82,23 +82,23 @@ class RollbackCommand implements CommandInterface
     {
         $db->query("SHOW TABLES");
         $tablesResult = $db->resultSet(); // ambil array hasil query
-    
+
         if (empty($tablesResult)) {
             return [];
         }
-    
+
         // Ambil nama kolom pertama (SHOW TABLES kolomnya dinamis)
         $tables = [];
         foreach ($tablesResult as $row) {
             $tables[] = reset($row); // reset() ambil value pertama dari array
         }
-    
+
         // Filter tabel sistem jika perlu
         return array_filter($tables, function ($table) {
             return $table !== 'migrations'; // jangan hapus tabel migrasi kalau mau dicatat
         });
     }
-    
+
 
     /**
      * Output helper mirip Laravel

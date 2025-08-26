@@ -1,23 +1,25 @@
 <?php
-    namespace TheFramework\App;
 
-    use Monolog\Logger;
-    use Monolog\Handler\StreamHandler;
-    use Monolog\Handler\SlackWebhookHandler;
+namespace TheFramework\App;
 
-    class Logging {
-        private static $logger;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SlackWebhookHandler;
 
-        public static function getLogger() {
-            if (!self::$logger) {
-                self::$logger = new Logger('app');
-                self::$logger->pushHandler(new StreamHandler(__DIR__ . '/../Storage/logs/app.log', Logger::DEBUG));
-                
-                if ($webhook = Config::get('SLACK_WEBHOOK_URL')) {
-                    self::$logger->pushHandler(new SlackWebhookHandler($webhook, Logger::ERROR));
-                }
+class Logging
+{
+    private static $logger;
+
+    public static function getLogger()
+    {
+        if (!self::$logger) {
+            self::$logger = new Logger('app');
+            self::$logger->pushHandler(new StreamHandler(__DIR__ . '/../Storage/logs/app.log', Logger::DEBUG));
+
+            if ($webhook = Config::get('SLACK_WEBHOOK_URL')) {
+                self::$logger->pushHandler(new SlackWebhookHandler($webhook, Logger::ERROR));
             }
-            return self::$logger;
         }
+        return self::$logger;
     }
-?>
+}

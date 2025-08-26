@@ -1,13 +1,22 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
 
-class MakeMigrationCommand implements CommandInterface {
-    public function getName(): string { return 'make:migration'; }
-    public function getDescription(): string { return 'Membuat file migrasi baru'; }
+class MakeMigrationCommand implements CommandInterface
+{
+    public function getName(): string
+    {
+        return 'make:migration';
+    }
+    public function getDescription(): string
+    {
+        return 'Membuat file migrasi baru';
+    }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         $name = $args[0] ?? 'new_migration';
         $timestamp = date('Y_m_d_His');
         $className = "Migration_{$timestamp}_" . str_replace(' ', '_', ucwords(str_replace(['-', '_'], ' ', $name)));
@@ -44,7 +53,8 @@ PHP;
         echo "\033[38;5;28m★ SUCCESS  Migrasi dibuat: $filename (database/migrations/$filename)\033[0m\n";
     }
 
-    private function getTableName($name) {
+    private function getTableName($name)
+    {
         // Hapus 'Create' dan 'Table', lalu konversi ke lower case dengan garis bawah
         $baseName = str_replace(['Create', 'Table'], '', $name);
         $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $baseName));

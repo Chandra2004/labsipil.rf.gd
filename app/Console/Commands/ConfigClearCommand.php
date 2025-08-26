@@ -1,13 +1,22 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
 
-class ConfigClearCommand implements CommandInterface {
-    public function getName(): string { return 'config:clear'; }
-    public function getDescription(): string { return 'Menghapus cache konfigurasi'; }
+class ConfigClearCommand implements CommandInterface
+{
+    public function getName(): string
+    {
+        return 'config:clear';
+    }
+    public function getDescription(): string
+    {
+        return 'Menghapus cache konfigurasi';
+    }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         $cachePath = BASE_PATH . '/storage/cache/config.php';
         if (file_exists($cachePath)) {
             unlink($cachePath);

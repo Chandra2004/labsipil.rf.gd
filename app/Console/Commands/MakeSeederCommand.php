@@ -1,4 +1,5 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
@@ -41,7 +42,7 @@ class MakeSeederCommand implements CommandInterface
         }
 
         // Path project root
-        $rootPath = realpath(__DIR__ . '/../../../'); 
+        $rootPath = realpath(__DIR__ . '/../../../');
         $seederPath = $rootPath . '/database/seeders/' . $name . '.php';
 
         // Pastikan folder seeders ada

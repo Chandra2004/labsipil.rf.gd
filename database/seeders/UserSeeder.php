@@ -9,15 +9,22 @@ use Faker\Factory;
 use TheFramework\Database\Seeder;
 use TheFramework\Helpers\Helper;
 
-class UserSeeder  {
+class UserSeeder
+{
 
-    public function run() {
+    public function run()
+    {
         $faker = Factory::create();
         Seeder::setTable('users');
 
-        for($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             Seeder::create([
-                ['name' => 'john_doe_' . $i, 'email' => $faker->email(), 'password' => Helper::hash_password('123456')]
+                [
+                    'uid' => Helper::uuid(25),
+                    'name' => $faker->name(),
+                    'email' => $faker->email(),
+                    'password' => Helper::hash_password('123456')
+                ]
             ]);
         }
     }

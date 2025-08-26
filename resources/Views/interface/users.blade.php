@@ -8,8 +8,8 @@
             <button data-modal-target="addUserModal" data-modal-toggle="addUserModal"
                 class="text-white bg-cyan-500 hover:bg-cyan-600 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center transition-transform hover:scale-105">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                    </path>
                 </svg>
                 Add User
             </button>
@@ -18,8 +18,7 @@
         <div class="mb-8">
             <a href="{{ url('/') }}" class="text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Back to Homepage
             </a>
@@ -41,8 +40,8 @@
                                 </p>
                             </div>
                             <div class="bg-cyan-400/10 p-3 rounded-lg group-hover:bg-cyan-400/20 transition-colors">
-                                <svg class="w-6 h-6 text-cyan-400 group-hover:scale-110 transition-transform"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-cyan-400 group-hover:scale-110 transition-transform" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
@@ -106,7 +105,7 @@
                             </div>
                             <input type="text" name="name" id="name"
                                 class="bg-gray-700/50 border border-gray-600/50 text-white text-sm rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 block w-full pl-10 p-3.5 hover:border-cyan-400/50 transition-all"
-                                placeholder="Full Name" >
+                                placeholder="Full Name">
                         </div>
 
                         <!-- Email Input -->
@@ -120,7 +119,7 @@
                             </div>
                             <input type="email" name="email" id="email"
                                 class="bg-gray-700/50 border border-gray-600/50 text-white text-sm rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 block w-full pl-10 p-3.5 hover:border-cyan-400/50 transition-all"
-                                placeholder="name@company.com" >
+                                placeholder="name@company.com">
                         </div>
 
                         <!-- File Upload with Preview -->

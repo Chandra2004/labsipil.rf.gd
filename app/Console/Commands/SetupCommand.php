@@ -1,14 +1,23 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use Defuse\Crypto\Key;
 use TheFramework\Console\CommandInterface;
 
-class SetupCommand implements CommandInterface {
-    public function getName(): string { return 'setup'; }
-    public function getDescription(): string { return 'Menjalankan pengaturan awal (env, kunci, autoload)'; }
+class SetupCommand implements CommandInterface
+{
+    public function getName(): string
+    {
+        return 'setup';
+    }
+    public function getDescription(): string
+    {
+        return 'Menjalankan pengaturan awal (env, kunci, autoload)';
+    }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         echo "\033[38;5;39m➤ INFO  Memulai pengaturan TheFramework";
         for ($i = 0; $i < 3; $i++) {
             echo ".";

@@ -4,172 +4,198 @@ namespace TheFramework\Http\Controllers;
 
 use Exception;
 use TheFramework\App\View;
+use TheFramework\Config\ImageHandler;
 use TheFramework\Helpers\Helper;
 use TheFramework\Models\HomeModel;
 
-class HomeController extends Controller {
-    public function __construct() {
-        parent::__construct();
+class HomeController extends Controller
+{
+    private $HomeModel;
+
+    public function __construct()
+    {
+        $this->HomeModel = new HomeModel();
     }
 
-    public function Index() {
+    public function Welcome()
+    {
         $notification = Helper::get_flash('notification');
+
         return View::render('interface.welcome', [
+            'title' => 'THE FRAMEWORK - Modern PHP Framework with Database Migrations & REST API',
             'notification' => $notification,
-            'status' => $this->HomeModel->StatusDatabase(),
 
-            'title' => 'THE FRAMEWORK - Modern PHP Framework with Database Migrations & REST API'
+            'status' => $this->HomeModel->Status()
         ]);
     }
-    
-    public function Users() {
+
+    public function Users()
+    {
         $notification = Helper::get_flash('notification');
+
         return View::render('interface.users', [
-            'notification' => $notification,
             'title' => 'THE FRAMEWORK - User Management',
-            'userData' => $this->HomeModel->GetUserData()
-    
+            'notification' => $notification,
+
+            'userData' => $this->HomeModel->GetAllUsers()
         ]);
     }
 
-    public function CreateUser() {
+    public function InformationUser($uid)
+    {
+        $notification = Helper::get_flash('notification');
+        $user = $this->HomeModel->InformationUser($uid);
+
+        if (empty($user)) {
+            return Helper::redirectToNotFound();
+        }
+
+        return View::render('interface.detail', [
+            'title' => 'THE FRAMEWORK - ' . $user['name'] . ' - User Detail',
+            'notification' => $notification,
+
+            'user' => $user
+        ]);
+    }
+
+    public function CreateUser()
+    {
         if (Helper::is_post() && Helper::is_csrf()) {
             $name = $_POST['name'];
             $email = $_POST['email'];
             $profilePicture = $_FILES['profile_picture'];
 
             if (empty($name) || empty($email)) {
-                return Helper::redirect('/users', 'warning', 'Name and Email cannot be empty.', 5000);
-            }
-
-            $result = $this->ProcessImage($profilePicture);
-
-            $errorMessage = [
-                'required_image' => 'Image is required.',
-                'failed_upload' => 'Image upload failed.',
-                'failed_extension' => 'File extension not supported.',
-                'failed_size' => 'File size is too large. Maximum 2MB.',
-                'failed_mime' => 'Invalid MIME type.',
-                'failed_read' => 'Failed to read image',
-            ];
-
-            $status  = 'success';
-            $message = 'Upload berhasil.';
-            $file    = $result;
-
-            if (array_key_exists($result, $errorMessage)) {
-                $status  = 'error';
-                $message = $errorMessage[$result];
-                $file    = null;
+                return Helper::redirect('/users', 'warning', 'Name and Email cannot be empty.', 5);
             }
 
             try {
-                if ($file != null) {
-                    $this->HomeModel->CreateUser($name, $email, $file);
-                    return Helper::redirect('/users', 'success', 'User created successfully.', 5000);
-                } else {
-                    return Helper::redirect('/users', 'error', 'Error: ' . $message, 5000);
-                }
-            } catch (Exception $e) {
-                return Helper::redirect('/users', 'error', 'Error: ' . $e->getMessage(), 5000);
-            }
+                $photoFileName = null;
+                if ($profilePicture && $profilePicture['error'] === UPLOAD_ERR_OK) {
+                    $resultPhoto = ImageHandler::handleUploadToWebP(
+                        $profilePicture,
+                        '/user-pictures'
+                    );
 
-        } else {
-            return Helper::redirect('/users', 'warning', 'Invalid request method.', 5000);
+                    if (ImageHandler::isError($resultPhoto)) {
+                        return Helper::redirect('/users', 'error', 'error: ' . ImageHandler::getErrorMessage($resultPhoto), 5);
+                    }
+
+                    $photoFileName = $resultPhoto;
+                }
+
+                $data = [
+                    'uid' => Helper::uuid(20),
+                    'name' => $name,
+                    'email' => $email,
+                    'profile_picture' => $photoFileName
+                ];
+
+                $resultUser = $this->HomeModel->CreateUser($data);
+
+                $messages = [
+                    'name_exist' => 'Name is taken',
+                    'email_exist' => 'Email is taken',
+                ];
+
+                if (array_key_exists($resultUser, $messages)) {
+                    if ($photoFileName) {
+                        ImageHandler::delete('/user-pictures', $photoFileName);
+                    }
+
+                    return Helper::redirect('/users', 'error', 'error: ' . $messages[$resultUser], 5);
+                }
+
+                return Helper::redirect('/users', 'success', $data['name'] . ' successfully create', 5);
+            } catch (Exception $e) {
+                if (!empty($photoFileName)) {
+                    ImageHandler::delete('/user-pictures', $photoFileName);
+                }
+
+                return Helper::redirect('/users', 'error', 'error: ' . $e->getMessage(), 5);
+            }
         }
     }
 
-    public function UpdateUser(string $uid) {
-        if(Helper::is_post() && Helper::is_csrf()) {
+    public function UpdateUser($uid)
+    {
+        if (Helper::is_post() && Helper::is_csrf()) {
             $name = $_POST['name'] ?? '';
             $email = $_POST['email'] ?? '';
             $profilePicture = $_FILES['profile_picture'] ?? null;
             $deleteProfilePicture = isset($_POST['delete_profile_picture']);
 
+            $user = $this->HomeModel->InformationUser($uid);
+
+            if (!$user) {
+                return Helper::redirect('/users', 'error', 'User not found', 5);
+            }
+
             if (empty($name) || empty($email)) {
-                return Helper::redirect('/users/information/' . $uid, 'error', 'Name and Email cannot be empty');
+                return Helper::redirect('/users', 'warning', 'Name and Email cannot be empty.', 5);
             }
 
             try {
-                $user = $this->HomeModel->InformationUser($uid);
-                if (!$user) {
-                    return Helper::redirect('/users', 'error', 'User not found', 5000);
+                if ($deleteProfilePicture) {
+                    if (!empty($user['profile_picture'])) {
+                        ImageHandler::delete('/user-pictures', $user['profile_picture']);
+                    }
+
+                    $updatePhoto = $this->HomeModel->UpdateUser(['profile_picture' => null], $uid);
+
+                    if ($updatePhoto === true) {
+                        return Helper::redirect("/users/information/{$uid}", 'success', 'Image successfully deleted', 5);
+                    }
+                    if ($updatePhoto === 'not_found') {
+                        return Helper::redirect("/users", 'error', 'User not found', 5);
+                    }
+                    return Helper::redirect('/users', 'error', 'Failed to update user.', 5);
                 }
 
-                $fileName = $user['profile_picture'];
-                if ($deleteProfilePicture && $fileName) {
-                    $uploadDir = ROOT_DIR . '/private-uploads/user-pictures/';
-                    $filePath = $uploadDir . $fileName;
-                    if (file_exists($filePath)) {
-                        unlink($filePath);
-                    }
-                    $fileName = null;
-                }
+                $data = [
+                    'name' => $name,
+                    'email' => $email,
+                    'updated_at' => `NOW()`
+                ];
 
                 if ($profilePicture && $profilePicture['error'] === UPLOAD_ERR_OK) {
-                    $fileName = $this->processImage($profilePicture, $uid);
-                    if ($fileName instanceof Exception) {
-                        return Helper::redirect('/users/information/' . $uid, 'error', $fileName->getMessage());
+                    $uploaded = ImageHandler::handleUploadToWebP($profilePicture, '/user-pictures');
+                    if (ImageHandler::isError($uploaded)) {
+                        return Helper::redirect('/users', 'error', 'error: ' . ImageHandler::getErrorMessage($uploaded), 5);
                     }
+
+                    // hapus foto lama jika ada
+                    if (!empty($user['profile_picture'])) {
+                        ImageHandler::delete('/user-pictures', $user['profile_picture']);
+                    }
+
+                    $data['profile_picture'] = $uploaded;
                 }
-    
-                $this->HomeModel->UpdateUser($uid, $name, $email, $fileName);
-                return Helper::redirect('/users/information/' . $uid, 'success', 'User ' . $user['name'] . ' updated successfully', 5000);
-    
+
+                $updateUser = $this->HomeModel->UpdateUser($data, $uid);
+
+                if ($updateUser === true) {
+                    return Helper::redirect("/users/information/{$uid}", 'success', 'User successfully updated', 5);
+                }
+                if ($updateUser === 'not_found') {
+                    return Helper::redirect('/users', 'error', 'User not found.', 5);
+                }
+                return Helper::redirect('/users', 'error', 'Failed to update user.', 5);
             } catch (Exception $e) {
-                return Helper::redirect('/users/information/' . $uid, 'error', 'Error: ' . $e->getMessage(), 20000);
+                return Helper::redirect('/users', 'error', 'error: ' . $e->getMessage(), 5);
             }
         }
     }
 
-    public function DeleteUser(string $uid) {
+    public function DeleteUser($uid)
+    {
         if (Helper::is_post() && Helper::is_csrf()) {
-            if (empty($uid)) {
-                return Helper::redirect('/users/information/' . $uid, 'error', 'UID tidak valid', 5000);
-            }
-    
-            try {
-                $user = $this->HomeModel->InformationUser($uid);
-                if (!$user) {
-                    return Helper::redirect('/users', 'error', 'User not found', 5000);
-                }
-    
-                $result = $this->HomeModel->DeleteUser($uid);
-    
-                if ($result === 'id_not_match') {
-                    return Helper::redirect('/users/information/' . $uid, 'error', 'ID user not match', 5000);
-                }
-                if ($result === false) {
-                    return Helper::redirect('/users/information/' . $uid, 'error', 'Failed delete user', 5000);
-                }
-    
-                if (!empty($user['profile_picture'])) {
-                    $filePath = ROOT_DIR . '/private-uploads/user-pictures/' . $user['profile_picture'];
-                    if (file_exists($filePath)) {
-                        unlink($filePath);
-                    }
-                }
-    
-                return Helper::redirect('/users', 'success', 'User ' . $user['name'] . ' Success delete user', 5000);
-    
-            } catch (Exception $e) {
-                return Helper::redirect('/users/information/' . $uid, 'error', 'Error: ' . $e->getMessage(), 20000);
-            }
+            $user = $this->HomeModel->InformationUser($uid);
+            ImageHandler::delete('/user-pictures', $user['profile_picture']);
+
+
+            $this->HomeModel->DeleteUser($uid);
+            return Helper::redirect('/users', 'success', 'user berhasil terhapus', 5);
         }
-    }    
-
-    public function InformationUser(string $uid) {
-        $notification = Helper::get_flash('notification');
-
-        $userDetail = $this->HomeModel->InformationUser($uid);
-        if (!$userDetail) return Helper::redirectToNotFound();
-
-        View::render('interface.detail', [
-            'title' => $userDetail['name'] . ' | THE FRAMEWORK - User Management',
-            'notification' => $notification,
-
-            'userData' => $this->HomeModel->getUserData()['users'] ?? [],
-            'user' => $userDetail,
-        ]);
     }
 }

@@ -1,52 +1,55 @@
 <?php
-    namespace TheFramework;
 
-    use Illuminate\View\Factory;
-    use Illuminate\Events\Dispatcher;
-    use Illuminate\View\Engines\EngineResolver;
-    use Illuminate\View\Engines\PhpEngine;
-    use Illuminate\View\Engines\CompilerEngine;
-    use Illuminate\View\FileViewFinder;
-    use Illuminate\Filesystem\Filesystem;
-    use Illuminate\View\Compilers\BladeCompiler;
+namespace TheFramework;
 
-    class BladeInit {
-        private static $blade;
+use Illuminate\View\Factory;
+use Illuminate\Events\Dispatcher;
+use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Engines\PhpEngine;
+use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\View\FileViewFinder;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\View\Compilers\BladeCompiler;
 
-        public static function init() {
-            if (!self::$blade) {
-                $filesystem = new Filesystem();
-                $resolver = new EngineResolver();
+class BladeInit
+{
+    private static $blade;
 
-                $resolver->register('blade', function () use ($filesystem) {
-                    $compiler = new BladeCompiler($filesystem, __DIR__ . '/Storage/cache/views');
-                    $compiler->directive('csrf', function () {
-                        return "<?php echo '<input type=\"hidden\" name=\"_token\" value=\"' . \$_SESSION['csrf_token'] . '\">'; ?>";
-                    });                    
-                    return new CompilerEngine($compiler, $filesystem);
+    public static function init()
+    {
+        if (!self::$blade) {
+            $filesystem = new Filesystem();
+            $resolver = new EngineResolver();
+
+            $resolver->register('blade', function () use ($filesystem) {
+                $compiler = new BladeCompiler($filesystem, __DIR__ . '/Storage/cache/views');
+                $compiler->directive('csrf', function () {
+                    return "<?php echo '<input type=\"hidden\" name=\"_token\" value=\"' . \$_SESSION['csrf_token'] . '\">'; ?>";
                 });
+                return new CompilerEngine($compiler, $filesystem);
+            });
 
-                $resolver->register('php', function () {
-                    return new PhpEngine();
-                });
+            $resolver->register('php', function () {
+                return new PhpEngine();
+            });
 
-                $viewPaths = [
-                    dirname(__DIR__) . '/resources/Views',
-                    dirname(__DIR__) . '/services',
-                ];
-                $finder = new FileViewFinder($filesystem, $viewPaths);
+            $viewPaths = [
+                dirname(__DIR__) . '/resources/Views',
+                dirname(__DIR__) . '/services',
+            ];
+            $finder = new FileViewFinder($filesystem, $viewPaths);
 
-                self::$blade = new Factory(
-                    $resolver,
-                    $finder,
-                    new Dispatcher()
-                );
-            }
-            return self::$blade;
+            self::$blade = new Factory(
+                $resolver,
+                $finder,
+                new Dispatcher()
+            );
         }
-
-        public static function getInstance() {
-            return self::init();
-        }
+        return self::$blade;
     }
-?>
+
+    public static function getInstance()
+    {
+        return self::init();
+    }
+}

@@ -1,13 +1,22 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
 
-class MakeModelCommand implements CommandInterface {
-    public function getName(): string { return 'make:model'; }
-    public function getDescription(): string { return 'Membuat kelas model baru'; }
+class MakeModelCommand implements CommandInterface
+{
+    public function getName(): string
+    {
+        return 'make:model';
+    }
+    public function getDescription(): string
+    {
+        return 'Membuat kelas model baru';
+    }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         $name = $args[0] ?? null;
         if (!$name) {
             echo "\033[38;5;124m✖ ERROR  Harap masukkan nama model\033[0m\n";
@@ -38,20 +47,15 @@ class MakeModelCommand implements CommandInterface {
         use Defuse\Crypto\Crypto;
         use Defuse\Crypto\Key;
         use Exception;
+        use TheFramework\App\Model;
         use TheFramework\Helpers\Helper;
 
-        class $className {
-            private \$db;
+        class HomeModel extends Model {
+            protected \$table = 'users';
+            protected \$primaryKey = 'uid';
 
-            public function __construct() {
-                $this->db = Database::getInstance();
-            }
-            
-            public function GetUserData() {
-                \$this->db->query("
-                    SELECT * FROM users
-                ");
-                return \$this->db->resultSet();
+            public function query() {
+                return new QueryBuilder(Database::getInstance());
             }
         }
         PHP;

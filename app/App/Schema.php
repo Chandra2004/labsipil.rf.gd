@@ -1,12 +1,29 @@
 <?php
+
 namespace TheFramework\App;
 
 use Closure;
 use TheFramework\App\Database;
 use TheFramework\App\Blueprint;
 
-class Schema {
-    public static function create($table, Closure $callback) {
+class Schema
+{
+    public static function table($table, Closure $callback)
+    {
+        $db = Database::getInstance();
+        $blueprint = new Blueprint($table);
+        $blueprint->setAlterMode(); // mode ALTER
+        $callback($blueprint);
+
+        $statements = $blueprint->getAlterStatements();
+        foreach ($statements as $sql) {
+            $db->query("ALTER TABLE `$table` $sql;");
+            $db->execute();
+        }
+    }
+
+    public static function create($table, Closure $callback)
+    {
         $db = Database::getInstance();
         $blueprint = new Blueprint($table);
         $callback($blueprint);
@@ -35,7 +52,8 @@ class Schema {
         $db->execute();
     }
 
-    public static function dropIfExists($table) {
+    public static function dropIfExists($table)
+    {
         $db = Database::getInstance();
         $sql = "DROP TABLE IF EXISTS `$table`;";
         // Hapus logging sementara (sebelumnya output())
@@ -44,7 +62,8 @@ class Schema {
         $db->execute();
     }
 
-    public static function insert(string $table, array $rows) {
+    public static function insert(string $table, array $rows)
+    {
         if (empty($rows)) return;
 
         $db = Database::getInstance();
@@ -53,7 +72,7 @@ class Schema {
 
         $values = [];
         foreach ($rows as $row) {
-            $escaped = array_map(function($value) use ($db) {
+            $escaped = array_map(function ($value) use ($db) {
                 return $db->quote($value); // Pastikan Database class punya method quote()
             }, $row);
             $values[] = "(" . implode(", ", $escaped) . ")";

@@ -1,10 +1,12 @@
 <?php
+
 namespace TheFramework\App;
 
 use TheFramework\BladeInit;
 use Exception;
 
-class View {
+class View
+{
     public static function render(string $view, $model = [])
     {
         $bladeView = str_replace('/', '.', $view);
@@ -30,5 +32,3 @@ class View {
         }
     }
 }
-
-?>

@@ -7,13 +7,15 @@ require __DIR__ . '/vendor/autoload.php';
 
 define('BASE_PATH', __DIR__);
 
-function color($text, $code) {
+function color($text, $code)
+{
     return "\033[{$code}m{$text}\033[0m";
 }
 
-function showHeader() {
-    echo color("═════  TheFramework v1.0.0  ═════", "38;5;39").PHP_EOL;
-    echo color("═════ BY Chandra Tri Antomo ═════", "38;5;39").PHP_EOL.PHP_EOL;
+function showHeader()
+{
+    echo color("═════  TheFramework v1.0.0  ═════", "38;5;39") . PHP_EOL;
+    echo color("═════ BY Chandra Tri Antomo ═════", "38;5;39") . PHP_EOL . PHP_EOL;
 }
 
 // Load all commands dynamically
@@ -47,20 +49,20 @@ array_shift($args);
 
 if ($commandName === 'list') {
     showHeader();
-    echo color("Penggunaan:", "38;5;39")." php artisan [perintah]\n\n";
-    echo color("Perintah yang tersedia:", "38;5;39")."\n";
-    echo str_repeat("─", 60)."\n";
+    echo color("Penggunaan:", "38;5;39") . " php artisan [perintah]\n\n";
+    echo color("Perintah yang tersedia:", "38;5;39") . "\n";
+    echo str_repeat("─", 60) . "\n";
     ksort($commands); // Sort commands alphabetically
     foreach ($commands as $name => $cmd) {
-        echo "  ".color(str_pad($name, 25), "38;5;28").$cmd->getDescription()."\n";
+        echo "  " . color(str_pad($name, 25), "38;5;28") . $cmd->getDescription() . "\n";
     }
-    echo str_repeat("─", 60)."\n";
+    echo str_repeat("─", 60) . "\n";
     exit;
 }
 
 if (!isset($commands[$commandName])) {
     showHeader();
-    echo color("✖ ERROR  Perintah [$commandName] tidak ditemukan.", "38;5;124").PHP_EOL.PHP_EOL;
+    echo color("✖ ERROR  Perintah [$commandName] tidak ditemukan.", "38;5;124") . PHP_EOL . PHP_EOL;
     // Suggest similar commands
     $suggestions = [];
     foreach ($commands as $name => $cmd) {
@@ -69,12 +71,12 @@ if (!isset($commands[$commandName])) {
         }
     }
     if (!empty($suggestions)) {
-        echo color("Mungkin Anda maksud:", "38;5;214")."\n";
+        echo color("Mungkin Anda maksud:", "38;5;214") . "\n";
         foreach ($suggestions as $suggestion) {
-            echo "  ".color($suggestion, "38;5;28")."\n";
+            echo "  " . color($suggestion, "38;5;28") . "\n";
         }
     }
-    echo PHP_EOL.color("Jalankan php artisan list untuk melihat perintah yang tersedia", "38;5;214").PHP_EOL;
+    echo PHP_EOL . color("Jalankan php artisan list untuk melihat perintah yang tersedia", "38;5;214") . PHP_EOL;
     exit(1);
 }
 

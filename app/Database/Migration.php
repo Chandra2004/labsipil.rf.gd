@@ -1,17 +1,18 @@
 <?php
-    namespace TheFramework\Database;
 
-    use TheFramework\App\Database;
+namespace TheFramework\Database;
 
-    abstract class Migration {
-        protected Database $db;
+use TheFramework\App\Database;
 
-        public function __construct()
-        {
-            $this->db = Database::getInstance();
-        }
+abstract class Migration
+{
+    protected Database $db;
 
-        abstract public function up();
-        abstract public function down();
+    public function __construct()
+    {
+        $this->db = Database::getInstance();
     }
-?>
+
+    abstract public function up();
+    abstract public function down();
+}

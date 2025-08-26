@@ -1,13 +1,22 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
 
-class MakeMiddlewareCommand implements CommandInterface {
-    public function getName(): string { return 'make:middleware'; }
-    public function getDescription(): string { return 'Membuat kelas middleware baru'; }
+class MakeMiddlewareCommand implements CommandInterface
+{
+    public function getName(): string
+    {
+        return 'make:middleware';
+    }
+    public function getDescription(): string
+    {
+        return 'Membuat kelas middleware baru';
+    }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         $name = $args[0] ?? null;
         if (!$name) {
             echo "\033[38;5;124m✖ ERROR  Harap masukkan nama middleware\033[0m\n";

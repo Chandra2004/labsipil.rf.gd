@@ -1,14 +1,23 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\App\Config;
 use TheFramework\Console\CommandInterface;
 
-class ServeCommand implements CommandInterface {
-    public function getName(): string { return 'serve'; }
-    public function getDescription(): string { return 'Menjalankan aplikasi pada server pengembangan PHP'; }
+class ServeCommand implements CommandInterface
+{
+    public function getName(): string
+    {
+        return 'serve';
+    }
+    public function getDescription(): string
+    {
+        return 'Menjalankan aplikasi pada server pengembangan PHP';
+    }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         Config::loadEnv('APP_ENV');
         $config = Config::get('APP_ENV');
         $config = strtoupper($config);

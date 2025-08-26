@@ -1,18 +1,23 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
 
-class SeedCommand implements CommandInterface {
-    public function getName(): string {
+class SeedCommand implements CommandInterface
+{
+    public function getName(): string
+    {
         return 'seed';
     }
 
-    public function getDescription(): string {
+    public function getDescription(): string
+    {
         return 'Menjalankan seeder database (semua atau seeder tertentu menggunakan --NamaSeeder)';
     }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         echo "\033[38;5;39m➤ INFO  Menjalankan seeder";
         for ($i = 0; $i < 3; $i++) {
             echo ".";

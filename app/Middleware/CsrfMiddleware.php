@@ -33,7 +33,8 @@ class CsrfMiddleware implements Middleware
         return !empty($sessionToken) && !empty($token) && hash_equals($sessionToken, $token);
     }
 
-    public function before() {
+    public function before()
+    {
         Config::loadEnv();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

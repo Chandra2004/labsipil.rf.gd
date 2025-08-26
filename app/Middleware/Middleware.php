@@ -1,7 +1,8 @@
 <?php
-    namespace TheFramework\Middleware;
 
-    interface Middleware {
-        function before();
-    }
-?>
+namespace TheFramework\Middleware;
+
+interface Middleware
+{
+    function before();
+}

@@ -1,11 +1,13 @@
 <?php
+
 namespace TheFramework\App;
 
 use TheFramework\Http\Controllers\Services\ErrorController;
 use TheFramework\Http\Controllers\Services\DebugController;
 use Exception;
 
-class Router {
+class Router
+{
     private static array $routes = [];             // Routes runtime
     private static array $routeDefinitions = [];   // Routes cache
     private static bool $routeFound = false;

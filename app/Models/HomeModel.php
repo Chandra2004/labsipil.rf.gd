@@ -1,92 +1,123 @@
 <?php
-    namespace TheFramework\Models;
 
-    use TheFramework\App\CacheManager;
-    use TheFramework\App\Database;
-    use TheFramework\App\Config;
-    use TheFramework\App\Logging;
-    use Defuse\Crypto\Crypto;
-    use Defuse\Crypto\Key;
-    use Exception;
-use TheFramework\Helpers\Helper;
+namespace TheFramework\Models;
 
-    class HomeModel extends Database {
-        private $db;
+use Exception;
+use TheFramework\App\Database;
+use TheFramework\App\QueryBuilder;
+use TheFramework\App\Model;
 
+class HomeModel extends Model
+{
+    private $database;
+    protected $table = 'users';
+    protected $primaryKey = 'uid';
 
-        public function __construct() {
-            $this->db = Database::getInstance();
-        }
+    public function Status()
+    {
+        $this->database = Database::getInstance();
+        return $this->database ? 'success' : 'failed';
+    }
 
-        public function StatusDatabase() {
-            try {
-                Database::getInstance();
-                return 'success';
-            } catch (Exception $e) {
-                echo "Gagal konek DB: " . $e->getMessage();
-            }            
-        }
+    public function GetAllUsers()
+    {
+        return $this->query()
+            ->table($this->table)
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+    }
 
-        public function GetUserData() {
-            $this->db->query("
-                SELECT * FROM users
-            ");
-            return $this->db->resultSet();
-        }
+    public function InformationUser($uid)
+    {
+        return $this->find($uid);
+    }
 
-        public function CreateUser($name, $email, $profilePicture) {
-            $this->db->query("
-                INSERT INTO users (uid, name, email, profile_picture)
-                VALUES (:uid, :name, :email, :profile_picture)
-            ");
+    public function CreateUser($data)
+    {
+        $db = Database::getInstance();
+        try {
+            $db->beginTransaction();
 
-            $this->db->bind(':uid', Helper::generateUUID(10));
-            $this->db->bind(':name', $name);
-            $this->db->bind(':email', $email);
-            $this->db->bind(':profile_picture', $profilePicture);
+            // cek nama
+            $exists = $this->query()
+                ->table($this->table)
+                ->where('name', '=', $data['name'])
+                ->first();
 
-            return $this->db->execute();
-        }
-
-        public function UpdateUser($uid, $name, $email, $profilePicture = null) {
-            $query = "
-                UPDATE users SET name = :name, email = :email, profile_picture = :profile_picture,
-                updated_at = CURRENT_TIMESTAMP WHERE uid = :uid
-            ";
-            $this->db->query($query);
-            $this->db->bind(':name', $name);
-            $this->db->bind(':email', $email);
-            $this->db->bind(':profile_picture', $profilePicture);
-            $this->db->bind(':uid', $uid);
-            return $this->db->execute();
-        }        
-
-        public function DeleteUser($uid) {
-            $this->db->query("
-                SELECT COUNT(*) as count FROM users 
-                WHERE uid = :uid
-            ");
-            $this->db->bind(':uid', $uid);
-            $result = $this->db->single();
-        
-            if (!$result || $result['count'] === 0) {
-                return 'id_not_match';
+            if ($exists) {
+                return 'name_exist';
             }
-        
-            $this->db->query("
-                DELETE FROM users WHERE uid = :uid
-            ");
-            $this->db->bind(':uid', $uid);
-            return $this->db->execute();
-        }
 
-        public function InformationUser($uid) {
-            $this->db->query("
-                SELECT * FROM users WHERE uid = :uid
-            ");
-            $this->db->bind('uid', $uid);
-            $data = $this->db->single();
-            return $data;
+            // cek email
+            $exists = $this->query()
+                ->table($this->table)
+                ->where('email', '=', $data['email'])
+                ->first();
+
+            if ($exists) {
+                return 'email_exist';
+            }
+
+            // insert
+            $insertUser = $this->query()
+                ->table($this->table)
+                ->insert($data);
+
+            $db->commit();
+            return $insertUser;
+        } catch (Exception $e) {
+            $db->rollBack();
+            throw $e;
         }
     }
-?>
+
+    public function UpdateUser($data, $uid)
+    {
+        $db = Database::getInstance();
+        try {
+            $db->beginTransaction();
+
+            $exists = $this->query()
+                ->table($this->table)
+                ->where('uid', '=', $uid)
+                ->first();
+
+            if (!$exists) {
+                $db->rollBack();
+                return 'not_found';
+            }
+
+            $updateUser = $this->query()
+                ->table($this->table)
+                ->where('uid', '=', $uid)
+                ->update($data);
+
+            if (!$updateUser) {
+                $db->rollBack();
+                return false;
+            }
+
+            $db->commit();
+            return true;
+        } catch (Exception $e) {
+            $db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function DeleteUser($uid)
+    {
+        $db = Database::getInstance();
+        try {
+            $db->beginTransaction();
+
+            $deleteUser = $this->delete($uid);
+
+            $db->commit();
+            return $deleteUser;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return $e;
+        }
+    }
+}

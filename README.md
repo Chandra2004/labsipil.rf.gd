@@ -52,13 +52,17 @@ FRAMEWORK/
 │   │   ├── CacheManager.php
 │   │   ├── Config.php
 │   │   ├── Database.php
-│   │   ├── ImageOptimizer.php
 │   │   ├── Logging.php
+│   │   ├── Model.php
+│   │   ├── QueryBuilder.php
 │   │   ├── RateLimiter.php
 │   │   ├── Router.php
 │   │   ├── Schema.php
 │   │   ├── SessionManager.php
 │   │   └── View.php
+│   ├── Config/
+│   │   ├── EmailHandler.php
+│   │   └── ImageHandler.php
 │   ├── Console/
 │   │   ├── Commands/
 │   │   │   └── ServeCommand.php

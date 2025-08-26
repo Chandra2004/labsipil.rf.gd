@@ -1,19 +1,24 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
 use Throwable;
 
-class MigrateCommand implements CommandInterface {
-    public function getName(): string {
+class MigrateCommand implements CommandInterface
+{
+    public function getName(): string
+    {
         return 'migrate';
     }
 
-    public function getDescription(): string {
+    public function getDescription(): string
+    {
         return 'Menjalankan migrasi database';
     }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         $migrationDir = BASE_PATH . '/database/migrations/';
         $migrationFiles = glob($migrationDir . '*.php');
 

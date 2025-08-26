@@ -1,13 +1,22 @@
 <?php
+
 namespace TheFramework\Console\Commands;
 
 use TheFramework\Console\CommandInterface;
 
-class MigrateFreshCommand implements CommandInterface {
-    public function getName(): string { return 'migrate:fresh'; }
-    public function getDescription(): string { return 'Menghapus semua tabel dan menjalankan ulang migrasi'; }
+class MigrateFreshCommand implements CommandInterface
+{
+    public function getName(): string
+    {
+        return 'migrate:fresh';
+    }
+    public function getDescription(): string
+    {
+        return 'Menghapus semua tabel dan menjalankan ulang migrasi';
+    }
 
-    public function run(array $args): void {
+    public function run(array $args): void
+    {
         echo "\033[38;5;214m⚠ WARNING  Ini akan menghapus semua tabel. Lanjutkan? [y/N] \033[0m";
         $input = trim(fgets(STDIN));
         if (strtolower($input) !== 'y') {
