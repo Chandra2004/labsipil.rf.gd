@@ -2,6 +2,8 @@
 
 namespace TheFramework\Helpers;
 
+use DateTime;
+use DateTimeZone;
 use TheFramework\App\Config;
 use TheFramework\App\Database;
 
@@ -261,6 +263,12 @@ class Helper
         $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // Set variant
         $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
         return substr($uuid, 0, $length); // Potong jika length lebih pendek
+    }
+
+    public static function updateAt() {
+        $time = Config::get("DB_TIMEZONE");
+        $dt = new DateTime('now', new DateTimeZone($time));
+        return $dt->format('Y-m-d H:i:s');
     }
 
     public static function json($data = [], $statusCode = 200)
