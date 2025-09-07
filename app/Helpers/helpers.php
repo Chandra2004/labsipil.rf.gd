@@ -44,6 +44,13 @@ if (!function_exists('uuid')) {
     }
 }
 
+if (!function_exists('updateAt')) {
+    function updateAt()
+    {
+        return Helper::updateAt();
+    }
+}
+
 if (!function_exists('rupiah')) {
     function rupiah($number)
     {
