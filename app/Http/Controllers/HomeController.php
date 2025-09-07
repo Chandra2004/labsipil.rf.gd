@@ -155,7 +155,7 @@ class HomeController extends Controller
                 $data = [
                     'name' => $name,
                     'email' => $email,
-                    'updated_at' => `NOW()`
+                    'updated_at' => Helper::updateAt()
                 ];
 
                 if ($profilePicture && $profilePicture['error'] === UPLOAD_ERR_OK) {
