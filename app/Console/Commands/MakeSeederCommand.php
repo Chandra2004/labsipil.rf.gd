@@ -13,7 +13,7 @@ class MakeSeederCommand implements CommandInterface
 
     public function getDescription(): string
     {
-        return 'Membuat file seeder baru di database/seeders';
+        return 'Membuat file seeder baru di database/seeders dengan format timestamp seperti migrasi';
     }
 
     public function run(array $args): void
@@ -25,59 +25,51 @@ class MakeSeederCommand implements CommandInterface
         }
         echo "\033[0m\n";
 
-        if (empty($args)) {
+        if (empty($args[0])) {
             echo "\033[31m[Error]\033[0m Nama seeder harus diberikan.\n";
-            echo "Contoh: php artisan make:seeder UserSeeder\n";
+            echo "Contoh: php artisan make:seeder RolesSeeder\n";
             return;
         }
 
-        $name = $args[0];
+        $baseName = str_ends_with($args[0], 'Seeder') ? $args[0] : $args[0] . 'Seeder';
+        $timestamp = date('Y_m_d_His');
+        $fileName = "{$timestamp}_{$baseName}.php";
+        $className = "Seeder_{$timestamp}_{$baseName}";
 
-        // Konversi nama seeder ke table name dengan aturan: UserSessionSeeder -> user_sessions
-        $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', preg_replace('/Seeder$/', '', $name)));
-        $tableName = rtrim($tableName, 's') . 's'; // pastikan plural sederhana
+        $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', str_replace('Seeder', '', $baseName)));
+        $tableName = trim($tableName, '_');
 
-        if (!str_ends_with($name, 'Seeder')) {
-            $name .= 'Seeder';
-        }
+        $seederPath = BASE_PATH . "/database/seeders/{$fileName}";
 
-        // Path project root
-        $rootPath = realpath(__DIR__ . '/../../../');
-        $seederPath = $rootPath . '/database/seeders/' . $name . '.php';
-
-        // Pastikan folder seeders ada
         if (!is_dir(dirname($seederPath))) {
             mkdir(dirname($seederPath), 0777, true);
         }
 
-        // Jika file sudah ada
         if (file_exists($seederPath)) {
-            echo "\033[33m[Warning]\033[0m Seeder '$name' sudah ada.\n";
+            echo "\033[33m[Warning]\033[0m Seeder '{$fileName}' sudah ada.\n";
             return;
         }
 
-        // Template seeder dengan contoh data untuk user_sessions
         $template = <<<PHP
 <?php
 
 namespace Database\Seeders;
 
-use TheFramework\App\Config;
-use Defuse\Crypto\Crypto;
-use Defuse\Crypto\Key;
 use Faker\Factory;
 use TheFramework\Database\Seeder;
 use TheFramework\Helpers\Helper;
 
-class $name  {
+class {$className} {
 
     public function run() {
         \$faker = Factory::create();
-        Seeder::setTable('$tableName');
+        Seeder::setTable('{$tableName}');
 
         Seeder::create([
             [
-                // Seedernya disini
+                // Contoh data:
+                // 'uid' => Helper::uuid(),
+                // 'name' => \$faker->name,
             ]
         ]);
     }
@@ -85,9 +77,8 @@ class $name  {
 
 PHP;
 
-        // Buat file
         if (file_put_contents($seederPath, $template) !== false) {
-            echo "\033[38;5;28m★ SUCCESS  Seeder dibuat: $name.php (database/seeders/$name.php)\033[0m\n";
+            echo "\033[38;5;28m★ SUCCESS  Seeder dibuat: {$fileName} (database/seeders/{$fileName})\033[0m\n";
         } else {
             echo "\033[31m[Error]\033[0m Gagal membuat seeder.\n";
         }
