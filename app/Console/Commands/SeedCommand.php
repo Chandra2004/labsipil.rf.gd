@@ -27,25 +27,25 @@ class SeedCommand implements CommandInterface
 
         $seedersPath = BASE_PATH . '/database/seeders';
 
-        // Cek apakah ada argumen yang dimulai dengan '--'
+        // Cek apakah user ingin menjalankan seeder tertentu
         $specificSeeder = null;
         foreach ($args as $arg) {
             if (strpos($arg, '--') === 0) {
-                $specificSeeder = substr($arg, 2); // Hapus '--' di depan
+                $specificSeeder = substr($arg, 2);
                 break;
             }
         }
 
         if ($specificSeeder) {
-            // Hanya jalankan seeder tertentu
             $seederFile = $seedersPath . '/' . $specificSeeder . '.php';
-            $className = 'Database\\Seeders\\' . $specificSeeder;
+            $className = 'Database\\Seeders\\Seeder_' . $specificSeeder;
 
             if (file_exists($seederFile)) {
                 require_once $seederFile;
                 if (class_exists($className)) {
                     $seeder = new $className();
                     if (method_exists($seeder, 'run')) {
+                        echo "\033[38;5;39m➤ INFO  Menjalankan seeder: {$specificSeeder}\033[0m\n";
                         $seeder->run();
                         echo "\033[38;5;28m★ SUCCESS  Seeder {$specificSeeder} selesai\033[0m\n";
                         return;
@@ -57,15 +57,35 @@ class SeedCommand implements CommandInterface
             return;
         }
 
-        // Jika tidak ada argumen khusus, jalankan semua seeder
-        foreach (glob($seedersPath . '/*Seeder.php') as $file) {
+        // Jalankan semua seeder berdasarkan urutan timestamp di nama file
+        $seederFiles = glob($seedersPath . '/*Seeder.php');
+
+        usort($seederFiles, function ($a, $b) {
+            return strcmp(basename($a), basename($b));
+        });
+
+        foreach ($seederFiles as $file) {
+            $fileName = basename($file, '.php');
+            $className = 'Database\\Seeders\\Seeder_' . $fileName;
+
+            echo "\033[38;5;39m➤ INFO  Menjalankan seeder: {$fileName}\033[0m\n";
+
             require_once $file;
-            $className = 'Database\\Seeders\\' . basename($file, '.php');
+
             if (class_exists($className)) {
                 $seeder = new $className();
                 if (method_exists($seeder, 'run')) {
-                    $seeder->run();
+                    try {
+                        $seeder->run();
+                        echo "\033[38;5;28m★ SUCCESS  Seeder {$fileName} selesai\033[0m\n";
+                    } catch (\Throwable $e) {
+                        echo "\033[38;5;196m✖ ERROR  Seeder {$fileName} gagal: {$e->getMessage()}\033[0m\n";
+                    }
+                } else {
+                    echo "\033[38;5;214m⚠ WARNING  Seeder {$fileName} tidak memiliki method 'run'\033[0m\n";
                 }
+            } else {
+                echo "\033[38;5;196m✖ ERROR  Class {$className} tidak ditemukan\033[0m\n";
             }
         }
 
