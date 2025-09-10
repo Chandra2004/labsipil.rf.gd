@@ -223,4 +223,28 @@ class QueryBuilder
             'last_page' => (int) ceil($total / $perPage),
         ];
     }
+
+    public function count(): int
+    {
+        $sql = "SELECT COUNT(*) as total FROM {$this->table}";
+
+        $conditions = [];
+        if (!empty($this->wheres)) {
+            $conditions[] = implode(" AND ", $this->wheres);
+        }
+        if (!empty($this->searches)) {
+            $conditions[] = implode(" AND ", $this->searches);
+        }
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $this->db->query($sql);
+        foreach ($this->bindings as $param => $value) {
+            $this->db->bind($param, $value);
+        }
+
+        $result = $this->db->single();
+        return (int) ($result['total'] ?? 0);
+    }
 }
