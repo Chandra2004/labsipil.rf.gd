@@ -126,6 +126,13 @@ class Blueprint
         return $this;
     }
 
+    public function datetime($column)
+    {
+        $this->columns[] = "`$column` DATETIME";
+        return $this;
+    }
+
+
     public function decimal($column, $total, $places)
     {
         $this->columns[] = "`$column` DECIMAL($total,$places)";
