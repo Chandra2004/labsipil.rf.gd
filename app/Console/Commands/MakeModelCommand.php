@@ -50,13 +50,9 @@ class MakeModelCommand implements CommandInterface
         use TheFramework\App\Model;
         use TheFramework\Helpers\Helper;
 
-        class HomeModel extends Model {
-            protected \$table = 'users';
+        class $className extends Model {
+            protected \$table = '$className';
             protected \$primaryKey = 'uid';
-
-            public function query() {
-                return new QueryBuilder(Database::getInstance());
-            }
         }
         PHP;
 
