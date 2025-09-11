@@ -60,6 +60,12 @@ class Blueprint
         return $this;
     }
 
+    public function time($column)
+    {
+        $this->columns[] = "`$column` TIME";
+        return $this;
+    }
+
     public function json($column)
     {
         $this->columns[] = "`$column` JSON";
