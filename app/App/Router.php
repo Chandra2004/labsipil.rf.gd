@@ -116,9 +116,10 @@ class Router
                             : new $middleware();
                         $instance->before();
                     }
-
-                    $params = array_values(array_filter($matches, fn($k) => $k !== 0, ARRAY_FILTER_USE_KEY));
-
+                
+                    // ✅ Ambil hanya named capturing group
+                    $params = array_intersect_key($matches, array_flip(array_filter(array_keys($matches), 'is_string')));
+                
                     if ($route['handler'] instanceof \Closure) {
                         call_user_func_array($route['handler'], $params);
                     } else {
