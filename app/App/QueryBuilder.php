@@ -36,23 +36,28 @@ class QueryBuilder
     /* -------------------------------
        BASIC WHERE / FILTER CONDITION
     --------------------------------*/
-    // public function where(string $column, string $operator, $value) {
-    //     $param = ":where_" . count($this->bindings);
-    //     $this->wheres[] = "`$column` $operator $param";
-    //     $this->bindings[$param] = $value;
-    //     return $this;
-    // }
 
     public function where(string $column, string $operator, $value)
     {
         $param = ":where_" . count($this->bindings);
-        $this->wheres[] = "`$column` $operator $param";
+
+        // kalau ada dot, misal "user_course.user_uid"
+        if (strpos($column, '.') !== false) {
+            $this->wheres[] = "$column $operator $param";
+        } else {
+            $this->wheres[] = "`$column` $operator $param";
+        }
+
         $this->bindings[$param] = $value;
-        if ($operator === '=') {
+
+        // hanya simpan ke wherePairs untuk update/delete kalau TIDAK pakai dot
+        if ($operator === '=' && strpos($column, '.') === false) {
             $this->wherePairs[$column] = $value;
         }
+
         return $this;
     }
+
 
 
     public function filter(string $column, $value)
