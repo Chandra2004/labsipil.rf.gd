@@ -1,170 +1,91 @@
 <?php
-
 namespace TheFramework\Http\Controllers\Services;
 
 use TheFramework\App\Config;
 
 class FileController
 {
-    private string $baseDir;
-    private array $allowedFolders = ['dummy', 'public', 'user-pictures', 'css', 'js'];
-    private array $allowedExtensions = ['ico', 'jpg', 'jpeg', 'png', 'webp', 'css', 'js', 'txt', 'html', 'htm'];
-
-    public function __construct()
-    {
-        Config::loadEnv();
-        $this->baseDir = realpath(ROOT_DIR . '/private-uploads') . DIRECTORY_SEPARATOR;
-    }
-
     public function Serve($params = [])
     {
+        $allowedFolders = ['public', 'user-pictures', 'images', 'docs'];
+        $forbiddenExtensions = ['php', 'phtml', 'phar', 'exe', 'sh', 'bat', 'sql'];
+        
         $requested = '';
+    
         if (is_array($params) && isset($params[0])) {
             $requested = $params[0];
         } elseif (is_string($params) && $params !== '') {
             $requested = $params;
-        } elseif (isset($_GET['file'])) {
-            $requested = $_GET['file'];
         }
-
-
-        if (empty($requested)) {
-            if (Config::get('APP_ENV') === 'local') {
-                $error = [
-                    'message' => 'Access denied: no file specified. check url : /file/(your allow folder)/(name of file.extension)',
-                    'file' => '/private-uploads/',
-                    'line' => '0'
-                ];
-
-                DebugController::showWarning($error);
-            } else if (Config::get('APP_ENV') === 'production') {
-                ErrorController::error403();
-            }
+    
+        if ($requested === '') {
+            $uri = $_SERVER['REQUEST_URI'] ?? '';
+            $requested = preg_replace('#^/file#', '', $uri);
         }
-
-        // Validasi folder teratas
-        $topFolder = strtok($requested, '/');
-        if (!in_array($topFolder, $this->allowedFolders, true)) {
-            if (Config::get('APP_ENV') === 'local') {
-                $error = [
-                    'message' => 'Access denied: invalid folder. check url : /file/(your allow folder)/(name of file.extension)',
-                    'file' => '/private-uploads/',
-                    'line' => '0'
-                ];
-
-                DebugController::showWarning($error);
-            } else if (Config::get('APP_ENV') === 'production') {
-                ErrorController::error403();
-            }
-        }
-
-        // Path absolut file
-        $fullPath = realpath($this->baseDir . DIRECTORY_SEPARATOR . $requested);
-        $realBase = $this->baseDir;
-
-        // Debugging sementara (hapus kalau sudah jalan)
-        // echo "<pre>"; var_dump($requested, $this->baseDir, $fullPath); exit;
-
-        // Cegah path traversal
-        if ($fullPath === false || strncmp($fullPath, $realBase, strlen($realBase)) !== 0) {
-            if (Config::get('APP_ENV') === 'local') {
-                $error = [
-                    'message' => 'Access denied: path traversal or file not found. check url : /file/(your allow folder)/(name of file.extension)',
-                    'file' => '/private-uploads/',
-                    'line' => '0'
-                ];
-
-                DebugController::showWarning($error);
-            } else if (Config::get('APP_ENV') === 'production') {
-                ErrorController::error403();
-            }
-        }
-
-        // Validasi ekstensi
-        $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
-        if (!in_array($ext, $this->allowedExtensions, true)) {
-            http_response_code(403);
-            exit('Invalid file extension.');
-        }
-
-        // Kalau file tidak ada → fallback
-        if (!is_file($fullPath)) {
-            $fullPath = $this->getFallbackFile($ext);
-            if (!$fullPath) {
-                if (Config::get('APP_ENV') === 'local') {
-                    $error = [
-                        'message' => 'File not found. check url : /file/(your allow folder)/(name of file.extension)',
-                        'file' => '/private-uploads/',
-                        'line' => '0'
-                    ];
-
-                    DebugController::showWarning($error);
-                } else if (Config::get('APP_ENV') === 'production') {
-                    ErrorController::error404();
-                }
-            }
-        }
-
-        // Tentukan MIME type
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime  = finfo_file($finfo, $fullPath) ?: 'application/octet-stream';
-        finfo_close($finfo);
-
-        // Validasi MIME type
-        $allowedMime = [
-            'image/jpeg',
-            'image/png',
-            'image/webp',
-            'image/x-icon',
-            'image/vnd.microsoft.icon',
-            'text/css',
-            'application/javascript',
-            'text/javascript',
-            'text/plain',
-            'text/html',
-        ];
-        if (!in_array($mime, $allowedMime, true)) {
-            if (Config::get('APP_ENV') === 'local') {
-                $error = [
-                    'message' => 'Invalid file type. check url : /file/(your allow folder)/(name of file.extension)',
-                    'file' => '/private-uploads/',
-                    'line' => '0'
-                ];
-
-                DebugController::showWarning($error);
-            } else if (Config::get('APP_ENV') === 'production') {
+    
+        $requested = '/' . ltrim($requested, '/');
+    
+        $privateDir = ROOT_DIR . '/private-uploads';
+        $filePath   = realpath($privateDir . $requested);
+    
+        // proteksi: pastikan file tetap di dalam private-uploads
+        if ($filePath === false || strpos($filePath, realpath($privateDir)) !== 0) {
+            if (strtolower(Config::get('APP_ENV')) === 'production') {
                 ErrorController::error404();
+                exit;
+            } else {
+                http_response_code(404);
+                echo "File tidak ditemukan.";
+                exit;
             }
         }
-
-        // Kirim file
-        header('Content-Type: ' . $mime);
-        header('Content-Length: ' . filesize($fullPath));
-        readfile($fullPath);
-        exit;
-    }
-
-    private function getFallbackFile(string $ext): ?string
-    {
-        $map = [
-            'jpg'  => 'dummy/dummy.jpg',
-            'jpeg' => 'dummy/dummy.jpg',
-            'png'  => 'dummy/dummy.jpg',
-            'webp' => 'dummy/dummy.jpg',
-            'css'  => ROOT_DIR . '/resources/css/empty.css',
-            'js'   => ROOT_DIR . '/resources/js/empty.js',
-        ];
-
-        $target = $map[$ext] ?? null;
-        if (!$target) {
-            return null;
+    
+        // whitelist folder
+        $relativePath   = ltrim($requested, '/');
+        $parts          = explode('/', $relativePath);
+        $folder         = $parts[0] ?? '';
+    
+        if (!in_array($folder, $allowedFolders)) {
+            if (strtolower(Config::get('APP_ENV')) === 'production') {
+                ErrorController::error403();
+                exit;
+            } else {
+                http_response_code(403);
+                echo "Folder tidak diizinkan.";
+                exit;
+            }
         }
-
-        if (str_starts_with($target, ROOT_DIR)) {
-            return is_file($target) ? $target : null;
+    
+        // blacklist ekstensi
+        $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+    
+        if (in_array($ext, $forbiddenExtensions)) {
+            if (strtolower(Config::get('APP_ENV')) === 'production') {
+                ErrorController::error403();
+                exit;
+            } else {
+                http_response_code(403);
+                echo "Ekstensi file tidak diizinkan.";
+                exit;
+            }
         }
-
-        $path = realpath($this->baseDir . DIRECTORY_SEPARATOR . $target);
-        return $path && is_file($path) ? $path : null;
+    
+        // cek file ada
+        if (file_exists($filePath)) {
+            $mime = mime_content_type($filePath);
+            header("Content-Type: " . $mime);
+            header("Content-Length: " . filesize($filePath));
+            readfile($filePath);
+            exit;
+        } else {
+            if (strtolower(Config::get('APP_ENV')) === 'production') {
+                ErrorController::error404();
+                exit;
+            } else {
+                http_response_code(404);
+                echo "File tidak ditemukan.";
+                exit;
+            }
+        }
     }
 }
