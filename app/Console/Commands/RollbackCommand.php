@@ -16,7 +16,7 @@ class RollbackCommand implements CommandInterface
 
     public function getDescription(): string
     {
-        return 'Membatalkan semua migrasi dengan menghapus semua tabel database';
+        return 'Membatalkan semua migrasi berdasarkan urutan dari terbaru ke terlama';
     }
 
     public function run(array $args): void
@@ -25,80 +25,69 @@ class RollbackCommand implements CommandInterface
 
         $this->info("Menyiapkan rollback migrasi");
 
-        // Konfirmasi penghapusan
-        $this->warn("Peringatan: Ini akan menghapus SEMUA tabel di database! Ketik 'yes' untuk melanjutkan: ");
+        // Ambil daftar migrasi dari tabel migrations
+        $migrations = $this->getMigrations($db);
+
+        if (empty($migrations)) {
+            $this->warn("Tidak ada migrasi yang ditemukan di tabel migrations.");
+            return;
+        }
+
+        // Konfirmasi dari user
+        $this->warn("Apakah kamu setuju untuk rollback semua tabel di database? (y/n): ");
         $handle = fopen("php://stdin", "r");
         $confirmation = trim(fgets($handle));
         fclose($handle);
 
-        if (!in_array(strtolower($confirmation), ['yes', 'y'], true)) {
+        if (!in_array(strtolower($confirmation), ['y', 'yes'], true)) {
             $this->error("Rollback dibatalkan oleh pengguna.");
             return;
         }
 
         $this->infoWait("Menjalankan rollback migrasi");
 
-        // Ambil daftar tabel
         try {
-            $tables = $this->getAllTables($db);
-        } catch (Throwable $e) {
-            $this->error("Gagal mengambil daftar tabel: " . $e->getMessage());
-            return;
-        }
+            // Jalankan dari migrasi terbaru ke lama
+            foreach (array_reverse($migrations) as $migration) {
+                $className = $migration['migration'];
 
-        if (empty($tables)) {
-            $this->warn("Tidak ada tabel yang ditemukan untuk dihapus.");
-            return;
-        }
-
-        try {
-            // Matikan pemeriksaan foreign key agar bisa drop semua tabel
-            $db->query("SET FOREIGN_KEY_CHECKS = 0");
-
-            foreach ($tables as $table) {
                 try {
-                    $this->info("Menghapus tabel: {$table}...");
-                    Schema::dropIfExists($table);
-                    $this->success("Tabel {$table} telah dihapus.");
+                    $class = "\\Database\\Migrations\\{$className}";
+                    if (!class_exists($class)) {
+                        $this->error("Class {$class} tidak ditemukan.");
+                        continue;
+                    }
+
+                    $this->info("Menjalankan down() untuk: {$className}");
+                    $instance = new $class();
+                    $instance->down();
+
+                    // Hapus record migrasi dari tabel
+                    $db->query("DELETE FROM migrations WHERE migration = :migration");
+                    $db->bind(':migration', $className);
+                    $db->execute();
+
+                    $this->success("Rollback {$className} berhasil.");
                 } catch (Throwable $e) {
-                    $this->error("Gagal menghapus tabel {$table}: " . $e->getMessage());
-                    // lanjut ke tabel berikutnya
+                    $this->error("Gagal rollback {$className}: " . $e->getMessage());
                 }
             }
 
-            // Aktifkan kembali pemeriksaan foreign key
-            $db->query("SET FOREIGN_KEY_CHECKS = 1");
-
-            $this->success("Semua tabel telah dihapus, rollback selesai.");
+            $this->success("Rollback selesai.");
         } catch (Throwable $e) {
             $this->error("Terjadi kesalahan saat rollback: " . $e->getMessage());
         }
     }
 
-    /**
-     * Ambil daftar semua tabel di database.
-     */
-    private function getAllTables($db): array
+    private function getMigrations($db): array
     {
-        $db->query("SHOW TABLES");
-        $tablesResult = $db->resultSet(); // ambil array hasil query
-
-        if (empty($tablesResult)) {
+        try {
+            $db->query("SELECT migration FROM migrations ORDER BY id ASC");
+            return $db->resultSet();
+        } catch (Throwable $e) {
             return [];
         }
-
-        // Ambil nama kolom pertama (SHOW TABLES kolomnya dinamis)
-        $tables = [];
-        foreach ($tablesResult as $row) {
-            $tables[] = reset($row); // reset() ambil value pertama dari array
-        }
-
-        // Filter tabel sistem jika perlu
-        return array_filter($tables, function ($table) {
-            return $table !== 'migrations'; // jangan hapus tabel migrasi kalau mau dicatat
-        });
     }
-
 
     /**
      * Output helper mirip Laravel
