@@ -142,7 +142,7 @@ FRAMEWORK/
   migrate:fresh            Menghapus semua tabel dan menjalankan ulang migrasi
   migrate:rollback         Membatalkan semua migrasi dengan menghapus semua tabel database
   route:cache              Menyimpan cache rute aplikasi
-  seed                     Menjalankan seeder database
+  db:seed                     Menjalankan seeder database
   serve                    Menjalankan aplikasi pada server pengembangan PHP
   setup                    Menjalankan pengaturan awal (env, kunci, autoload)
 ```
@@ -255,3 +255,4 @@ Kami terbuka untuk kontribusi! Silakan buat pull request atau hubungi:
 - WhatsApp: 085730676143
 - Email   : chandratriantomo123@gmail.com
 - Website : https://www.the-framework.ct.ws
+
