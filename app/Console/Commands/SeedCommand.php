@@ -8,7 +8,7 @@ class SeedCommand implements CommandInterface
 {
     public function getName(): string
     {
-        return 'seed';
+        return 'db:seed';
     }
 
     public function getDescription(): string
@@ -92,3 +92,4 @@ class SeedCommand implements CommandInterface
         echo "\033[38;5;28m★ SUCCESS  Semua seeder selesai\033[0m\n";
     }
 }
+
