@@ -1,11 +1,8 @@
 <?php
-
 namespace TheFramework\Console\Commands;
 
 use Throwable;
 use TheFramework\Console\CommandInterface;
-use TheFramework\App\Database;
-use TheFramework\App\Schema;
 
 class RollbackCommand implements CommandInterface
 {
@@ -16,77 +13,60 @@ class RollbackCommand implements CommandInterface
 
     public function getDescription(): string
     {
-        return 'Membatalkan semua migrasi berdasarkan urutan dari terbaru ke terlama';
+        return 'Membatalkan migrasi database dengan menjalankan method down() dari file migrasi secara berurutan (dari terbaru ke terlama).';
     }
 
     public function run(array $args): void
     {
-        $db = Database::getInstance();
+        // Tampilkan pesan konfirmasi
+        $this->warn("Apakah kamu setuju untuk rollback semua tabel di database? (y/n): ");
+        $handle = fopen("php://stdin", "r");
+        $response = trim(fgets($handle));
+        fclose($handle);
 
-        $this->info("Menyiapkan rollback migrasi");
-
-        // Ambil daftar migrasi dari tabel migrations
-        $migrations = $this->getMigrations($db);
-
-        if (empty($migrations)) {
-            $this->warn("Tidak ada migrasi yang ditemukan di tabel migrations.");
+        // Hanya lanjutkan jika pengguna mengetik 'y' atau 'Y'
+        if (strtolower($response) !== 'y') {
+            $this->info("Rollback dibatalkan oleh pengguna.");
             return;
         }
 
-        // Konfirmasi dari user
-        $this->warn("Apakah kamu setuju untuk rollback semua tabel di database? (y/n): ");
-        $handle = fopen("php://stdin", "r");
-        $confirmation = trim(fgets($handle));
-        fclose($handle);
+        $migrationDir = BASE_PATH . '/database/migrations/';
+        $migrationFiles = glob($migrationDir . '*.php');
 
-        if (!in_array(strtolower($confirmation), ['y', 'yes'], true)) {
-            $this->error("Rollback dibatalkan oleh pengguna.");
+        if (empty($migrationFiles)) {
+            $this->warn("Tidak ada file migrasi ditemukan di $migrationDir");
             return;
         }
 
         $this->infoWait("Menjalankan rollback migrasi");
 
-        try {
-            // Jalankan dari migrasi terbaru ke lama
-            foreach (array_reverse($migrations) as $migration) {
-                $className = $migration['migration'];
+        // Urutkan dari besar ke kecil (rollback terbaru duluan)
+        rsort($migrationFiles);
 
-                try {
-                    $class = "\\Database\\Migrations\\{$className}";
-                    if (!class_exists($class)) {
-                        $this->error("Class {$class} tidak ditemukan.");
-                        continue;
-                    }
+        foreach ($migrationFiles as $file) {
+            $baseName = basename($file, '.php');
+            $migrationClass = 'Database\\Migrations\\Migration_' . $baseName;
 
-                    $this->info("Menjalankan down() untuk: {$className}");
-                    $instance = new $class();
-                    $instance->down();
-
-                    // Hapus record migrasi dari tabel
-                    $db->query("DELETE FROM migrations WHERE migration = :migration");
-                    $db->bind(':migration', $className);
-                    $db->execute();
-
-                    $this->success("Rollback {$className} berhasil.");
-                } catch (Throwable $e) {
-                    $this->error("Gagal rollback {$className}: " . $e->getMessage());
-                }
+            if (!class_exists($migrationClass)) {
+                require_once $file;
             }
 
-            $this->success("Rollback selesai.");
-        } catch (Throwable $e) {
-            $this->error("Terjadi kesalahan saat rollback: " . $e->getMessage());
+            if (class_exists($migrationClass)) {
+                try {
+                    $migration = new $migrationClass();
+                    $this->info("Rollback migrasi: $baseName...");
+                    $migration->down();
+                    $this->success("Rollback selesai untuk $baseName");
+                } catch (Throwable $e) {
+                    $this->error("Gagal rollback $baseName: " . $e->getMessage());
+                    // lanjut ke file berikutnya
+                }
+            } else {
+                $this->error("Kelas migrasi '$migrationClass' tidak ditemukan.");
+            }
         }
-    }
 
-    private function getMigrations($db): array
-    {
-        try {
-            $db->query("SELECT migration FROM migrations ORDER BY id ASC");
-            return $db->resultSet();
-        } catch (Throwable $e) {
-            return [];
-        }
+        $this->success("Rollback migrasi selesai.");
     }
 
     /**
@@ -109,7 +89,7 @@ class RollbackCommand implements CommandInterface
 
     private function warn(string $message): void
     {
-        echo "\033[38;5;214m⚠ WARNING  {$message}\033[0m\n";
+        echo "\033[38;5;214m⚠ WARNING  {$message}\033[0m";
     }
 
     private function error(string $message): void
