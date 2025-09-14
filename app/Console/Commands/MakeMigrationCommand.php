@@ -39,6 +39,8 @@ class {$className} {
     {
         Schema::create('{$tableName}', function (\$table) {
             \$table->increments('id');
+            \$table->string('uid', 20)->unique();
+            
             \$table->timestamps();
         });
     }
