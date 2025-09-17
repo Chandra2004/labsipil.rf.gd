@@ -126,32 +126,42 @@ class QueryBuilder
     public function toSql(): string
     {
         $sql = "SELECT {$this->columns} FROM {$this->table}";
-
+    
         if (!empty($this->joins)) {
             $sql .= " " . implode(" ", $this->joins);
         }
-
+    
         $conditions = [];
         if (!empty($this->wheres)) {
-            $conditions[] = implode(" AND ", $this->wheres);
+            $whereClauses = [];
+            foreach ($this->wheres as $w) {
+                if (is_array($w) && isset($w['type']) && $w['type'] === 'raw') {
+                    $whereClauses[] = $w['condition']; // ambil kondisi raw
+                } else {
+                    $whereClauses[] = $w; // ambil string biasa
+                }
+            }
+            $conditions[] = implode(" AND ", $whereClauses);
         }
+    
         if (!empty($this->searches)) {
             $conditions[] = implode(" AND ", $this->searches);
         }
+    
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
-
+    
         if (!empty($this->groupBy)) {
             $sql .= " GROUP BY " . implode(", ", $this->groupBy);
         }
-
+    
         if (!empty($this->orderBy)) {
             $sql .= " ORDER BY " . implode(", ", $this->orderBy);
         }
-
+    
         return $sql;
-    }
+    }    
 
     /* -------------------------------
        EXECUTION HELPERS
@@ -229,30 +239,6 @@ class QueryBuilder
         ];
     }
 
-    // public function count(): int
-    // {
-    //     $sql = "SELECT COUNT(*) as total FROM {$this->table}";
-
-    //     $conditions = [];
-    //     if (!empty($this->wheres)) {
-    //         $conditions[] = implode(" AND ", $this->wheres);
-    //     }
-    //     if (!empty($this->searches)) {
-    //         $conditions[] = implode(" AND ", $this->searches);
-    //     }
-    //     if (!empty($conditions)) {
-    //         $sql .= " WHERE " . implode(" AND ", $conditions);
-    //     }
-
-    //     $this->db->query($sql);
-    //     foreach ($this->bindings as $param => $value) {
-    //         $this->db->bind($param, $value);
-    //     }
-
-    //     $result = $this->db->single();
-    //     return (int) ($result['total'] ?? 0);
-    // }
-
     public function count(): int
     {
         $sql = "SELECT COUNT(*) as total FROM ({$this->toSql()}) as sub";
@@ -264,5 +250,20 @@ class QueryBuilder
 
         $result = $this->db->single();
         return (int) ($result['total'] ?? 0);
+    }
+
+    public function whereRaw(string $condition, array $bindings = [])
+    {
+        foreach ($bindings as $i => $value) {
+            $key = ':raw' . count($this->bindings);
+            $condition = preg_replace('/\?/', $key, $condition, 1);
+            $this->bindings[$key] = $value;
+        }
+
+        $this->wheres[] = [
+            'type' => 'raw',
+            'condition' => $condition
+        ];
+        return $this;
     }
 }
