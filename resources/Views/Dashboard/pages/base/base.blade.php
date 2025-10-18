@@ -1,0 +1,21 @@
+@extends('Dashboard.layouts.layout')
+@section('Dashboard.layouts.layout')
+    @switch($user['role_name'])
+        @case('SuperAdmin')
+            @include('Dashboard.pages.superadmin.dashboard')
+        @break
+        @case('Koordinator')
+            @include('Dashboard.pages.koordinator.dashboard')
+        @break
+        @case('Pembimbing')
+            @include('Dashboard.pages.pembimbing.dashboard')
+        @break
+        @case('Asisten')
+            @include('Dashboard.pages.asisten.dashboard')
+        @break
+        @case('Praktikan')
+            @include('Dashboard.pages.praktikan.dashboard')
+        @break
+        @default
+    @endswitch
+@endsection

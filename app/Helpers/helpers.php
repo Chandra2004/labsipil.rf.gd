@@ -1,6 +1,7 @@
 <?php
 
 use TheFramework\Helpers\Helper;
+use TheFramework\Http\Controllers\Services\ErrorController;
 
 if (!function_exists('url')) {
     function url($path = '')
@@ -55,5 +56,12 @@ if (!function_exists('rupiah')) {
     function rupiah($number)
     {
         return Helper::rupiah($number);
+    }
+}
+
+if (!function_exists('maintentance')) {
+    function maintenance()
+    {
+        return ErrorController::maintenance();
     }
 }

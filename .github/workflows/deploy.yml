@@ -1,0 +1,59 @@
+name: Deploy to InfinityFree
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout kode
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup PHP dan Composer
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo, pdo_mysql
+          coverage: none
+          tools: composer
+
+      # 3️⃣ Install dependencies
+      - name: Install Composer dependencies
+        run: |
+          composer install --no-dev --optimize-autoloader
+          echo "✅ Dependencies installed"
+
+      # 4️⃣ Buat file .env dari GitHub Secrets
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+          echo "✅ .env file created"
+
+      # 5️⃣ (Opsional) Verifikasi isi .env
+      - name: Verify .env
+        run: |
+          echo "File .env contents:"
+          head -n 5 .env
+
+      # 6️⃣ Deploy ke InfinityFree via FTP
+      - name: Sinkronisasi file ke InfinityFree
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /labsipil.rf.gd/htdocs/
+          local-dir: ./ # pastikan vendor/ dan .env termasuk
+          exclude: |
+            **/.git*
+            **/.github*
+            **/tests*
+            **/node_modules*
+            **/storage/logs/*
+            **/vendor/bin/*

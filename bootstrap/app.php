@@ -21,25 +21,25 @@ header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
 header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
 
 // Rate limiting sederhana
-$clientIp = $_SERVER['REMOTE_ADDR'];
-$rateLimitFile = __DIR__ . '/../app/Storage/cache/ratelimit/' . md5($clientIp);
-$limit = 100;
-$window = 120;
+// $clientIp = $_SERVER['REMOTE_ADDR'];
+// $rateLimitFile = __DIR__ . '/../app/Storage/cache/ratelimit/' . md5($clientIp);
+// $limit = 100;
+// $window = 120;
 
-if (!file_exists(dirname($rateLimitFile))) {
-    mkdir(dirname($rateLimitFile), 0755, true);
-}
-$hits = 0;
-if (file_exists($rateLimitFile)) {
-    $data = json_decode(file_get_contents($rateLimitFile), true);
-    $hits = (time() - $data['timestamp'] < $window) ? $data['hits'] : 0;
-}
-$hits++;
-file_put_contents($rateLimitFile, json_encode(['hits' => $hits, 'timestamp' => time()]));
-if ($hits > $limit) {
-    http_response_code(429);
-    exit('Too many requests.');
-}
+// if (!file_exists(dirname($rateLimitFile))) {
+//     mkdir(dirname($rateLimitFile), 0755, true);
+// }
+// $hits = 0;
+// if (file_exists($rateLimitFile)) {
+//     $data = json_decode(file_get_contents($rateLimitFile), true);
+//     $hits = (time() - $data['timestamp'] < $window) ? $data['hits'] : 0;
+// }
+// $hits++;
+// file_put_contents($rateLimitFile, json_encode(['hits' => $hits, 'timestamp' => time()]));
+// if ($hits > $limit) {
+//     http_response_code(429);
+//     exit('Too many requests.');
+// }
 
 // Jalankan router
 CsrfMiddleware::generateToken();

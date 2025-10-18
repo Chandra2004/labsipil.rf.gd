@@ -3,6 +3,7 @@
 
 # Ignore Composer dependencies
 /vendor/
+/.idx/
 
 /vendor/**
 

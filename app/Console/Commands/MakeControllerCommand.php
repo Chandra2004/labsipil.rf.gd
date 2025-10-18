@@ -46,6 +46,8 @@ use TheFramework\App\View;
 use TheFramework\Helpers\Helper;
 
 class $className extends Controller {
+    public function __construct() {}
+    
     public function Index() {
         \$notification = Helper::get_flash('notification');
         
