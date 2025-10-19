@@ -1,1 +1,1 @@
-<h1>ini dari asisten/dashboard</h1>
+{{ maintenance() }}

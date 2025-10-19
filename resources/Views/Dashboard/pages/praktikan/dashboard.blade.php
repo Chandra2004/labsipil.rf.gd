@@ -1,4 +1,6 @@
-<main class="p-4 sm:p-6">
+{{ maintenance() }}
+
+{{-- <main class="p-4 sm:p-6">
     <!-- Page Header -->
     <div class="mb-8">
         <h1 class="font-headline text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
@@ -121,4 +123,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
